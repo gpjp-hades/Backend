@@ -79,7 +79,13 @@ require "app/template/navbar.php";
         <input type="hidden" name="id" value="<?=$info['id']?>">
         <div class="form-group">
             <label class="col-md-4 control-label">UID:</label>
-            <p class="col-md-6 form-control-static"><code><?=$info['uid']?></code></p>
+            <p class="col-md-6 form-control-static"><code><?php
+            if(strlen($info['uid']) > 33) {
+              echo substr($info['uid'], 0, 30) . "..."; 
+            } else {
+              echo $info['uid'];
+            }
+            ?></code></p>
         </div>
         <div class="form-group">
             <label class="col-md-4 control-label" for="name">Name:</label>

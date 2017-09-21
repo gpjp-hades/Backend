@@ -13,7 +13,8 @@ $db = new app\db();
             if (count($pending)) {
                 echo "<div class='list-group'>";
                 foreach($pending as $pc) {
-                    echo "<a class='list-group-item' href='?info=" . $pc['uid'] . "'>" . (strlen($pc['name']) ? "<strong>" . $pc['name'] . " </strong>" : "") . "<code>" . $pc['uid'] . "</code></a>" . PHP_EOL;
+                    echo "<li class='list-group-item'><a class='list-group-item-heading' href='?info=" . $pc['uid'] . "'>" . (strlen($pc['name']) ? "<strong>" . $pc['name'] . " </strong>" : "") . "</a>" . PHP_EOL;
+                    echo "<code>" . $pc['uid'] . "</code></li>";
                 }
                 echo "</div>";
             } else {
