@@ -56,9 +56,21 @@ class auth {
             return true;
         return false;
     }
+    
+    static function auth() {
+        @session_start();
+        require_once "app/db.php";
+        $db = new db();
+        if (is_string(@$_SESSION['token']) && 
+            strlen(@$_SESSION['token']) == 8 && 
+            $db->has("users", ["token" => $_SESSION['token']])
+        )
+            return true;
+        return false;
+    }
 
     function hasToken() {
-        if (is_string(@$_SESSION['token']) && strlen(@$_SESSION['token']) == 8)
+        
             return true;
         return false;
     }
