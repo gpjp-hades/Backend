@@ -87,7 +87,12 @@ class index {
                 unset($this->auth);
                 require "app/template/info/group.php";
                 exit;
+            } else if (isset($_GET['users'])) {
+                unset($this->auth);
+                require "app/template/users.php";
+                exit;
             }
+
 
             require "app/template/main.php";
         } else if (is_string(@$_POST['uname']) && is_string(@$_POST['passw']) && @$_POST['type'] == "login") {

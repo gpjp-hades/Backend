@@ -46,48 +46,80 @@ if (isset($_GET['delete'])) {
     }
 }
 
+if (!is_string($_GET['info'])) {
+    $error = "No arguemnt suplied";
+    require "app/template/navbar.php";
+    exit();
+}
+
+$info = $db->get("pc", "*", ["uid" => $_GET['info']]);
+if (!$info) {
+    $error = "System not found";
+    require "app/template/navbar.php";
+    exit();
+}
+
 require "app/template/navbar.php";
 ?>
 
-System information:
-<?php
-    if (!is_string($_GET['info']))
-        exit("No arguemnt suplied");
-    
-    $info = $db->get("pc", "*", ["uid" => $_GET['info']]);
-    if (!$info)
-        exit("PC not found");
-?>
-<?php
-    if ($info['approved'] == false) {
-        echo "<h1>System awaiting approval</h1>";
-    }
-?>
-<form method="post">
-    Name: <input type="text" name="name" value="<?=$info['name']?>"><br />
-    Belongs to group: <select name="group">
-        <?php
-            foreach($db->select("categories", ["name", "id"]) as $group) {
-                if ($group['id'] == $info['category']) {
-                    echo "<option value='".$group['id']."' selected>".$group['name']."</option>";
-                } else {
-                    echo "<option value='".$group['id']."'>".$group['name']."</option>";
-                }
-            }
-        ?>
-    </select>
-    <br />
-    WikiLink: <input type="text" name="wiki" value="<?=$info['wikilink']?>">
-    <input type="hidden" name="type" value="system">
-    <input type="hidden" name="id" value="<?=$info['id']?>">
-    <br />
+<div class="container">
+<div class="col-md-6 col-md-offset-3">
     <?php
-    if ($info['approved']) {
-        echo '<input type="submit" value="Update">';
-    } else {
-        echo '<input type="submit" value="Approve">';
-    }
+        if ($info['approved'] == false) {
+            echo '<div class="panel panel-success">';
+            echo '<div class="panel-heading"><strong>Approve system</strong></div>';
+        } else {
+            echo '<div class="panel panel-primary">';
+            echo '<div class="panel-heading"><strong>System information</strong></div>';
+        }
     ?>
-</form>
-
-<a href="?info=<?=$info['uid']?>&delete">Remove machine</a>
+    <div class="panel-body">
+    <form method="post" class="form-horizontal">
+        <input type="hidden" name="type" value="system">
+        <input type="hidden" name="id" value="<?=$info['id']?>">
+        <div class="form-group">
+            <label class="col-md-4 control-label">UID:</label>
+            <p class="col-md-6 form-control-static"><code><?=$info['uid']?></code></p>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="name">Name:</label>
+            <div class="col-md-6">
+                <strong><input class="form-control" type="text" name="name" id="name" value="<?=$info['name']?>" required></strong>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="group">Belongs to group:</label>
+            <div class="col-md-6">
+                <select name="group" class="form-control" id="group">
+                <?php
+                    foreach($db->select("categories", ["name", "id"]) as $group) {
+                        if ($group['id'] == $info['category']) {
+                            echo "<option value='".$group['id']."' selected>".$group['name']."</option>";
+                        } else {
+                            echo "<option value='".$group['id']."'>".$group['name']."</option>";
+                        }
+                    }
+                ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="wiki">DokuWiki:</label>
+            <div class="col-md-6">
+                <input class="form-control" type="text" name="wiki" id="wiki" value="<?=$info['wikilink']?>">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <?php
+                if ($info['approved']) {
+                    echo '<input class="btn btn-primary" type="submit" value="Update">';
+                    echo '<a href="?info=' . $info['uid'] . '&delete" class="pull-right text-danger">Remove machine</a>';
+                } else {
+                    echo '<input class="btn btn-success" type="submit" value="Approve">';
+                }
+                ?>
+            </div>
+        </div>
+    </form>
