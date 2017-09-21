@@ -63,14 +63,14 @@ class auth {
         $db = new db();
         if (is_string(@$_SESSION['token']) && 
             strlen(@$_SESSION['token']) == 8 && 
-            $db->has("users", ["token" => $_SESSION['token']])
+            $uname = $db->get("users", "uname", ["token" => $_SESSION['token']])
         )
-            return true;
+            return $uname;
         return false;
     }
 
     function hasToken() {
-        
+        if (is_string(@$_SESSION['token']) && strlen(@$_SESSION['token']) == 8)
             return true;
         return false;
     }

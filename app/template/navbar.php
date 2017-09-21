@@ -10,7 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-default">
     <div class="container">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -24,13 +24,22 @@
     <div id="navbar" class="collapse navbar-collapse">
         <?php
         require_once "app/auth.php";
-        if (\app\auth::auth()) {
+        if ($uname = \app\auth::auth()) {
             echo <<<EOF
-            <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span class="glyphicon glyphicon-user"></span>
+                    $uname
+                    <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="?logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li><a href="?change"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
+                    <li><a href="?register"><span class="glyphicon glyphicon-plus"></span> Register new user</a></li>
+                </ul>
+            </li>
+          </ul>
 EOF;
         }
         ?>
@@ -38,6 +47,7 @@ EOF;
     </div>
 </nav>
 <div class="container">
+<div class="col-md-6 col-md-offset-3">
 <?php
 if (is_string(@$error)) {
     echo "<div class='alert alert-danger'>
@@ -50,3 +60,5 @@ if (is_string(@$status)) {
 </div>";
 }
 ?>
+</div>
+</div>
