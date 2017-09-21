@@ -77,7 +77,7 @@ require "app/template/navbar.php";
     <form method="post" class="form-horizontal">
         <input type="hidden" name="type" value="system">
         <input type="hidden" name="id" value="<?=$info['id']?>">
-        <div class="form-group v-align">
+        <div class="form-group">
             <label class="col-md-4 control-label">UID:</label>
             <p class="col-md-6 form-control-static"><code><?=$info['uid']?></code></p>
         </div>
