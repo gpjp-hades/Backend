@@ -9,7 +9,7 @@ class api {
         $this->db = new db();
 
         if (!$this->valid_token()) {
-            sleep(5);
+            //sleep(5);
             exit('{"error": "invalid request"}');
         }
 
@@ -19,10 +19,10 @@ class api {
             $name = preg_replace('/[^\x20-\x7E]/','', @$_GET['name']);
 
             $this->db->insert("pc", ["uid" => $this->token, "name" => $name, "lastActive" => time()]);
-            sleep(5);
+            //sleep(5);
             exit('{"success": "request pending"}');
         } else if ($this->db->has("pc", ["uid" => $this->token, "approved" => false])) {
-            sleep(5);
+            //sleep(5);
             exit('{"success": "request pending"}');
         } else {
             $config = $this->db->get("pc", ["[>]categories" => ["category" => "id"]], ["categories.config"], ["pc.uid" => $this->token]);
