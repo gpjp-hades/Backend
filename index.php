@@ -15,7 +15,15 @@ class index {
                 is_string(@$_POST['passw2']) && 
                 @$_POST['type'] == "reg"
             ) {
-                if (preg_match('/[^\x20-\x7f]/', $_POST['uname'])) {
+                if (!strlen($_POST['uname'])) {
+                    $error = "You must enter username";
+                    require "app/template/auth/register.php";
+                    exit;
+                } else if (!strlen($_POST['passw'])) {
+                    $error = "You must enter password";
+                    require "app/template/auth/register.php";
+                    exit;
+                } else if (preg_match('/[^\x20-\x7f]/', $_POST['uname'])) {
                     $error = "Use only ASCII in username";
                     require "app/template/auth/register.php";
                     exit;
@@ -43,6 +51,10 @@ class index {
                 if ($_POST['passw'] != $_POST['passw2']) {
                     $error = "Passwords don't match";
                     require "app/template/auth/changePassw.php";
+                    exit;
+                } else if (!strlen($_POST['passw'])) {
+                    $error = "You must enter password";
+                    require "app/template/auth/register.php";
                     exit;
                 } else if (!$this->auth->checkPassword($_POST['old'])) {
                     $error = "Wrong current password";
