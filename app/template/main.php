@@ -13,8 +13,8 @@ $db = new app\db();
             if (count($pending)) {
                 echo "<div class='list-group'>";
                 foreach($pending as $pc) {
-                    echo "<li class='list-group-item'><a class='list-group-item-heading' href='?info=" . $pc['uid'] . "'>" . (strlen($pc['name']) ? "<strong>" . $pc['name'] . " </strong>" : "") . "</a>" . PHP_EOL;
-                    echo "<code>" . $pc['uid'] . "</code></li>";
+                    echo "<li class='list-group-item'><a class='list-group-item-heading' href='?info=" . $pc['uid'] . "'><strong>" . (strlen($pc['name']) ? $pc['name'] : "unknown") . " </strong></a>" . PHP_EOL;
+                    echo "<br /><code>" . $pc['uid'] . "</code></li>";
                 }
                 echo "</div>";
             } else {
@@ -31,11 +31,12 @@ $db = new app\db();
             if (count($approved)) {
                 echo "<ul class='list-group'>";
                 foreach($approved as $pc) {
-                    echo "<li class='list-group-item'><h4 class='list-group-item-heading'><a href='?info=" . $pc['uid'] . "'>" . $pc['name'] . "</a>";
-                    echo "<small> UID:<code>".$pc['uid']."</code></small>";
+                    echo "<li class='list-group-item'><h4 class='list-group-item-heading'>";
                     if (strlen($pc['wikilink'])) {
                         echo "<a href='" . $pc['wikilink'] . "' class='btn btn-default pull-right btn-xs'>DokuWiki</a>";
                     }
+                    echo "<a href='?info=" . $pc['uid'] . "'>" . $pc['name'] . "</a>";
+                    echo "<br /><small> UID:<code>".$pc['uid']."</code></small>";
                     echo "</h4><p class='list-group-item-text'>";
                     echo "Group: <strong>" . $db->get("categories", "name", ["id" => $pc['category']]) . "</strong><br />";
                     echo "Last active: <strong>" . date('d. m. Y H:i:s',  $pc['lastActive']) . "</strong>";

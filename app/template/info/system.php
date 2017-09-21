@@ -122,10 +122,14 @@ require "app/template/navbar.php";
                 if ($info['approved']) {
                     echo '<input class="btn btn-primary" type="submit" value="Update">';
                     echo '<a href="?info=' . $info['uid'] . '&delete" class="pull-right text-danger">Remove machine</a>';
+                    
                 } else {
                     echo '<input class="btn btn-success" type="submit" value="Approve">';
+                    echo '<a href="?info=' . $info['uid'] . '&delete" class="pull-right text-danger">Deny request</a>';
                 }
+                
                 ?>
+                
             </div>
         </div>
     </form>
