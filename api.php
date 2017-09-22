@@ -10,7 +10,7 @@ class api {
 
         if (!$this->valid_token()) {
             //sleep(5);
-            exit('{"error": "invalid request"}');
+            exit('{"result": "invalid request"}');
         }
 
         $this->token = strtoupper($_GET['token']);
@@ -20,13 +20,13 @@ class api {
 
             $this->db->insert("pc", ["uid" => $this->token, "name" => $name, "lastActive" => time()]);
             //sleep(5);
-            exit('{"success": "request pending"}');
+            exit('{"result": "request pending"}');
         } else if ($this->db->has("pc", ["uid" => $this->token, "approved" => false])) {
             //sleep(5);
-            exit('{"success": "request pending"}');
+            exit('{"result": "request pending"}');
         } else {
             $config = $this->db->get("pc", ["[>]categories" => ["category" => "id"]], ["categories.config"], ["pc.uid" => $this->token]);
-            exit(json_encode(["success" => "approved", "config" => $config['config']]));
+            exit(json_encode(["result" => "approved", "config" => $config['config']]));
         }
         
     }

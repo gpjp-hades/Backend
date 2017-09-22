@@ -79,10 +79,12 @@ EOL;
     </div>
     <div class="form-group">
         <div class="col-md-10 col-md-offset-2" style="margin-top: 5px;">
-            <input class="btn btn-primary" type="submit" value="Update">
             <?php
                 if ($info['id'] != "new") {
+                    echo '<input class="btn btn-primary" type="submit" value="Update">';
                     echo '<a href="?group=' . $info['id'] . '&delete" class="pull-right text-danger">Remove group</a>';
+                } else {
+                    echo '<input class="btn btn-primary" type="submit" value="Create">';
                 }
             ?>  
         </div>
