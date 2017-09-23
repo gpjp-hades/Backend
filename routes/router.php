@@ -42,7 +42,16 @@ class router {
     function getRoute() {
         return $this->route;
     }
-
+    private function post() {
+        switch($this->request[0]) {
+            case "login":
+                $this->route = ["AuthController@login", ["post" => $_POST]];
+                break;
+            default:
+                $this->error();
+                break;
+        }
+    }
     private function get() {
         switch($this->request[0]) {
             case "":

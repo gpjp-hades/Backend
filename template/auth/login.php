@@ -6,7 +6,7 @@ require __dir__."/../app/layout.php";
 <div class="panel panel-default">
     <div class="panel-heading">Login</div>
     <div class="panel-body">
-        <form class="form-horizontal" method="post">
+        <form class="form-horizontal" method="post" action="login">
             <input type="hidden" name="type" value="login">
             <div class="form-group">
                 <label class="col-md-4 control-label" for="uname">Username:</label>
