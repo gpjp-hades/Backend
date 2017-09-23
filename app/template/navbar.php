@@ -34,8 +34,9 @@
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                     <li><a href="?logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                    <li role="presentation" class="divider"></li>
                     <li><a href="?change"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li><a href="?users"><span class="glyphicon glyphicon-briefcase"></span> Manage users</a></li>
                     <li><a href="?register"><span class="glyphicon glyphicon-plus"></span> Register new user</a></li>
                 </ul>
             </li>

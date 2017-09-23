@@ -26,32 +26,67 @@ if (isset($_GET['delete'])) {
     }
 }
 
+if (!is_string($_GET['group'])) {
+    $error = "No arguemnt suplied";
+    require "app/template/navbar.php";
+    exit();
+}
+
+if ($_GET['group'] == "new") {
+    $info = ["name" => "New group", "id" => "new", "config" => ""];
+} else {
+    $info = $db->get("categories", "*", ["id" => $_GET['group']]);
+    if (!$info) {
+        $error = "Group not found";
+        require "app/template/navbar.php";
+        exit();
+    }
+}
+
 require "app/template/navbar.php";
 ?>
 
-Group information:
-<?php
-    if (!is_string($_GET['group']))
-        exit("No arguemnt suplied");
-    
-    if ($_GET['group'] == "new") {
-        $info = ["name" => "New group", "id" => "new", "config" => ""];
-    } else {
-        $info = $db->get("categories", "*", ["id" => $_GET['group']]);
-        if (!$info)
-            exit("Group not found");
-    }
-?>
-<h1><?=$info['name']?></h1>
-Config:
-<form method="post">
+<div class="container">
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+    <div class="panel-heading"><strong>Group information</div>
+    <div class="panel-body">
+<form method="post" class="form-horizontal">
     <input type="hidden" name="type" value="group">
     <input type="hidden" name="id" value="<?=$info['id']?>">
+    <div class="form-group">
+        <div class="col-md-10 col-md-offset-2">
+            <p class="lead form-control-static" id="name"><?=$info['name']?></p>
+        </div>
+    </div>
     <?php
-        if ($info['id'] == "new")
-            echo '<input type="text" name="name" placeholder="Group name">';
+        if ($info['id'] == "new") {
+            echo <<<EOL
+<div class="form-group">
+    <label class="col-md-2 control-label" for="name">Group name:</label>
+    <div class="col-md-6">
+        <strong><input class="form-control" type="text" name="name" id="name" required></strong>
+    </div>
+</div>
+EOL;
+        }
     ?>
-    <textarea name="config" cols="30" rows="10"><?=$info['config']?></textarea>
-    <input type="submit" value="Update">
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="config">Config:</label>
+        <div class="col-md-10">
+            <textarea class="form-control" id="config" name="config" cols="100" rows="20"><?=$info['config']?></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10 col-md-offset-2" style="margin-top: 5px;">
+            <?php
+                if ($info['id'] != "new") {
+                    echo '<input class="btn btn-primary" type="submit" value="Update">';
+                    echo '<a href="?group=' . $info['id'] . '&delete" class="pull-right text-danger">Remove group</a>';
+                } else {
+                    echo '<input class="btn btn-primary" type="submit" value="Create">';
+                }
+            ?>  
+        </div>
+    </div>
 </form>
-<a href="?group=<?=$info['id']?>&delete">Remove group</a>
