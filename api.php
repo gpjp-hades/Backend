@@ -34,8 +34,7 @@ class api {
     function valid_token() {
         if (
             is_string(@$_GET['token']) &&
-            strlen($_GET['token']) == 64 &&
-            !preg_match('/[^\x20-\x7f]/', $_GET['token'])
+            !preg_match('/([^0-9A-F])|(^.{65,}$)/', $_GET['token'])
         )
             return true;
         return false;
