@@ -10,7 +10,9 @@ class display {
 
     function loadFile() {
         $fnc = explode("@", $this->route[0]);
-        return call_user_func(["\hades\app\controller\\" . $fnc[0], $fnc[1]], $this->route[1]);
+        $name = "\\hades\\app\\controller\\" . $fnc[0];
+        $call = new $name;
+        return $call->{$fnc[1]}($this->route[1]);
     }
     
     function parse($file) : string {
