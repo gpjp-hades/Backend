@@ -64,6 +64,12 @@ class router {
             case "dashboard":
                 $this->route = ["HomeController@dashboard", []];
                 break;
+            case "logout":
+                $this->route = ["AuthController@logout", []];
+                break;
+            case "manageUsers":
+                $this->route = ["UserController@manage", []];
+                break;
             case "api":
                 if (isset($this->request[1])) {
                     $args = ["token" => $this->request[1]];

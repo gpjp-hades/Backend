@@ -10,6 +10,11 @@ class AuthController {
         $this->auth = new auth();
     }
 
+    function logout () {
+        $this->auth->logout();
+        return [""];
+    }
+
     function login ($params) {
         $post = $params['post'];
         if (

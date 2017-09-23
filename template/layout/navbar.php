@@ -7,11 +7,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="<?=strtok($_SERVER["REQUEST_URI"],'?')?>">Config Deployment</a>
+        <a class="navbar-brand" href="<?=getenv("ROOT")?>dashboard">Config Deployment</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
         <?php
         if ($uname = \hades\app\middleware\auth::auth()) {
+            $logout = getenv("ROOT") . "logout";
             echo <<<EOF
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -20,7 +21,7 @@
                     $uname
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                    <li><a href="?logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li><a href="$logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                     <li><a href="?change"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
                     <li role="presentation" class="divider"></li>
                     <li><a href="?users"><span class="glyphicon glyphicon-briefcase"></span> Manage users</a></li>

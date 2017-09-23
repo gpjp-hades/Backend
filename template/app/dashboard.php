@@ -1,6 +1,5 @@
 <?php
 require __dir__."/../layout/app.php";
-$db = new \hades\database\db();
 ?>
 
 <div class="container">
@@ -9,7 +8,7 @@ $db = new \hades\database\db();
     <div class="panel-heading"><strong>Pending approval</strong></div>
     <div class="panel-body">
         <?php
-            $pending = $db->select("pc", ["name", "uid"], ["approved" => false]);
+            $pending = $GLOBALS["PENDING"];
             if (count($pending)) {
                 echo "<div class='list-group'>";
                 foreach($pending as $pc) {
@@ -27,7 +26,7 @@ $db = new \hades\database\db();
     <div class="panel-heading"><strong>Systems</strong></div>
     <div class="panel-body">
         <?php
-            $approved = $db->select("pc", "*", ["approved" => true]);
+            $approved = $GLOBALS["APPROVED"];
             if (count($approved)) {
                 echo "<ul class='list-group'>";
                 foreach($approved as $pc) {
@@ -38,7 +37,7 @@ $db = new \hades\database\db();
                     echo "<a href='?info=" . $pc['uid'] . "'>" . $pc['name'] . "</a>";
                     echo "<br /><small> UID:<code>".$pc['uid']."</code></small>";
                     echo "</h4><p class='list-group-item-text'>";
-                    echo "Group: <strong>" . $db->get("categories", "name", ["id" => $pc['category']]) . "</strong><br />";
+                    echo "Group: <strong>" . $GLOBALS["ASSOC"][$pc['category']] . "</strong><br />";
                     echo "Last active: <strong>" . date('d. m. Y H:i:s',  $pc['lastActive']) . "</strong>";
                     echo "</p></li>" . PHP_EOL;
                 }
@@ -54,7 +53,7 @@ $db = new \hades\database\db();
     <div class="panel-body">
         <?php
             echo "<div class='list-group'>";
-            foreach ($db->select("categories", "*") as $group) {
+            foreach ($GLOBALS["GROUPS"] as $group) {
                 echo "<a class='list-group-item' href='?group=" . $group['id'] . "'>" . $group['name'] . "</a>" . PHP_EOL;
             }
             echo "</div>";

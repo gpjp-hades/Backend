@@ -12,6 +12,8 @@
 
 namespace hades\bootstrap;
 
+putenv("ROOT=/hades/public/");
+
 require __DIR__."/autoload.php";
 new autoload();
 

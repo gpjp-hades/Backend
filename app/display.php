@@ -4,7 +4,8 @@ namespace hades\app;
 
 class display {
     function __construct(\hades\routes\router $router) {
-
+        
+        $this->router = $router;
         $this->route = $router->getRoute();
     }
 
