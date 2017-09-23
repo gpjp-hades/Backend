@@ -9,14 +9,10 @@
 
 define('HADES_START', microtime(true));
 
-// Prepare routing
+// Start the application
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-// Start the application
+// Display output
 
-var_dump($_SERVER["REQUEST_URI"]);
-
-class base extends \hades\base {
-    
-}
+echo $app;

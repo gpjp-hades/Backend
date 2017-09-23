@@ -47,9 +47,6 @@ final class autoload {
         } else {
             $trace = \debug_backtrace();
             
-            //why can't php have oop arrays :(
-            \array_shift($trace);
-    
             throw new \Exception($this->parseStackTrace($trace));
             return false;
         }
