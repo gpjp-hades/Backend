@@ -2,6 +2,8 @@
 
 namespace hades\routes;
 
+use \hades\app\middleware\auth;
+
 class router {
 
     private $route;
@@ -44,7 +46,11 @@ class router {
     private function get() {
         switch($this->request[0]) {
             case "":
-                $this->route = ["HomeController@index", []];
+                if (auth::auth()) {
+                    $this->route = ["HomeController@index", []];
+                } else {
+                    $this->route = ["HomeController@login", []];
+                }
                 break;
             case "api":
                 if (isset($this->request[1])) {

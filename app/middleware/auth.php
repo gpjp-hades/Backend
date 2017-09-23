@@ -1,13 +1,12 @@
 <?php
 
-namespace app;
+namespace hades\app\middleware;
 
 class auth {
     function __construct() {
         session_start();
-        require_once "app/db.php";
 
-        $this->db = new db();
+        $this->db = new \hades\database\db();
     }
 
     function login($uname, $passw) {
@@ -59,13 +58,15 @@ class auth {
     
     static function auth() {
         @session_start();
-        require_once "app/db.php";
-        $db = new db();
+        $db = new \hades\database\db();
         if (is_string(@$_SESSION['token']) && 
             strlen(@$_SESSION['token']) == 8 && 
             $uname = $db->get("users", "uname", ["token" => $_SESSION['token']])
-        )
+        ) {
+            unset($db);
             return $uname;
+        }
+        unset($db);
         return false;
     }
 

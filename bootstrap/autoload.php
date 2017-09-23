@@ -29,8 +29,6 @@ final class autoload {
      *
      * Autoloader using namespaces as folder structure
      *
-     * if class was not found, throw error with stack trace
-     *
      * @param string $class - requested class to be loaded
      * @return bool
      */
@@ -38,31 +36,13 @@ final class autoload {
 
         $path = __DIR__."/../".\str_replace("hades/", "", \str_replace("\\", "/", $class));
 
-        //check if we have the class
         if (\is_file($path . ".php")) {
 
             require $path . ".php";
             return true;
 
         } else {
-            $trace = \debug_backtrace();
-            
-            throw new \Exception($this->parseStackTrace($trace));
             return false;
         }
     }
-
-    /**
-     *
-     * Parse stack trace, can be overloaded
-     *
-     * @param array $stackTrace - call trace from debug_backtrace()
-     * @return string will get HTML escaped
-     */
-    function parseStackTrace(array $stackTrace) : string {
-        
-        //convert array to string
-        return print_r($stackTrace, true);
-    }
-    
 }
