@@ -4,8 +4,8 @@ namespace hades\app\controller;
 
 class HomeController {
 
-    function index () {
-        return "basic";
+    function dashboard() {
+        return "app/dashboard";
     }
 
     function login () {

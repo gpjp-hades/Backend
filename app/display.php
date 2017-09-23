@@ -27,7 +27,7 @@ class display {
     function parse($file) : string {
         if (is_array($file)) {
             if (count($file) == 1) {
-                header("Location: /hades/public/" . $file[0]);
+                return $this->router->redirect($file[0]);
             } else {
                 $file = $this->loadFile($file);
             }

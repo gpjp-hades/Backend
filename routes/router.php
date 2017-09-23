@@ -56,10 +56,13 @@ class router {
         switch($this->request[0]) {
             case "":
                 if (auth::auth()) {
-                    $this->route = ["HomeController@index", []];
+                    $this->redirect("dashboard");
                 } else {
                     $this->route = ["HomeController@login", []];
                 }
+                break;
+            case "dashboard":
+                $this->route = ["HomeController@dashboard", []];
                 break;
             case "api":
                 if (isset($this->request[1])) {
@@ -80,5 +83,12 @@ class router {
 
     private function error() {
         $this->route = ["ErrorController@_404", []];
+    }
+
+    function redirect($path) {
+        header("Location: /hades/public/" . $path);
+        echo "<script>window.location.href = '$path'</script>";
+        flush();
+        exit;
     }
 }

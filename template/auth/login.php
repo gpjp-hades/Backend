@@ -1,5 +1,5 @@
 <?php
-require __dir__."/../app/layout.php";
+require __dir__."/../layout/app.php";
 ?>
 <div class="container">
 <div class="col-md-6 col-md-offset-3">
