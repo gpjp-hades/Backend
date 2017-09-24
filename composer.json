@@ -1,0 +1,16 @@
+{
+    "require": {
+        "slim/slim": "^3.0",
+        "slim/php-view": "^2.2",
+        "catfan/Medoo": "^1.4",
+        "monolog/monolog": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "app/",
+            "middleware\\": "app/middleware/",
+            "database\\": "database/",
+            "controller\\": "app/controller/"
+        }
+    }
+}
