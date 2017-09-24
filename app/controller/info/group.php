@@ -1,8 +1,8 @@
 <?php
 
-namespace controller;
+namespace controller\info;
 
-class home {
+class group {
     
     use \controller\sendResponse;
     
@@ -12,8 +12,8 @@ class home {
         $this->container = $container;
     }
 
-    function __invoke($request, $response, $args) {
-        $pending    = $this->container->db->select("systems", "*", ["approved" => false]);
+    function dashboard($request, $response, $args) {
+        $pending    = $this->container->db->select("systems", ["name", "uid"], ["approved" => false]);
         $approved   = $this->container->db->select("systems", "*", ["approved" => true]);
         $categories = $this->container->db->select("categories", "*");
 

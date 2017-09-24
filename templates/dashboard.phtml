@@ -9,10 +9,10 @@
         <div class='list-group'>
         <?php foreach($pending as $pc):?>
             <li class='list-group-item'>
-                <a class='list-group-item-heading' href='?info=<?=$pc['uid']?>'>
+                <a class='list-group-item-heading' href='<?=$router->pathFor('approve', ['id' => $pc['id']])?>'>
                     <strong><?=strlen($pc['name']) ? $pc['name'] : "unknown"?></strong>
                 </a><br />
-                <code><?=$pc['uid']?></code>
+                <code id="trim"><?=$pc['uid']?></code>
             </li>
         <?php endforeach?>
         </div>
@@ -34,7 +34,7 @@
                 <?php endif?>
                     <a href='?info=<?=$ap['uid']?>'><?=$ap['name']?></a><br />
                     <small>
-                        UID:<code><?=$ap['uid']?></code>
+                        UID:<code id="trim"><?=$ap['uid']?></code>
                     </small>
                 </h4>
                 <p class='list-group-item-text'>

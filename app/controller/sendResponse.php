@@ -21,4 +21,10 @@ trait sendResponse {
 
         $response = $this->container->view->render($response, $page, $args);
     }
+
+    function redirectWithMessage(&$response, $namedRoute, $message, $content, $args = []) {
+        $this->container->flash->addMessage($message, $content);
+        
+        $response = $response->withRedirect($this->container->router->pathFor($namedRoute, $args), 301);
+    }
 }

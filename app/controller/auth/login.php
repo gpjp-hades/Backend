@@ -37,11 +37,7 @@ class login {
                 } else {
                     $this->container->logger->addInfo("Auth failed for user " . $name);
 
-                    $this->container->flash->addMessage("error", [
-                        "Login failed!", "Please try again"
-                    ]);
-
-                    $response = $response->withRedirect($this->container->router->pathFor('login'), 301);
+                    $this->redirectWithMessage($response, 'login', "error", ["Login failed!", "Please try again"]);
                 }
             }
         }

@@ -33,11 +33,8 @@ class changePassword {
                 ]);
 
             } else if (!$this->container->auth->checkPassword($old)) {
-                $this->container->flash->addMessage("error", [
-                    "Error!", "Wrong current password!"
-                ]);
-
-                $response = $response->withRedirect($this->container->router->pathFor('changePassword'), 301);
+                
+                $this->redirectWithMessage($response, 'changePassword', "error", ["Error!", "Wrong current password!"]);
             } else if (
                 is_string($old) && strlen($old) > 0 &&
                 is_string($pass) && strlen($pass) > 0 &&
@@ -46,18 +43,9 @@ class changePassword {
                 
                 $this->container->auth->changePass($pass);
                 
-                $this->container->flash->addMessage("status", [
-                    "Success!", "Password changed successfully"
-                ]);
-
-                $response = $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
-                
+                $this->redirectWithMessage($response, 'dashboard', "status", ["Success!", "Password changed successfully"]);
             } else {
-                $this->container->flash->addMessage("error", [
-                    "Error!", "Passwords don't match!"
-                ]);
-
-                $response = $response->withRedirect($this->container->router->pathFor('changePassword'), 301);
+                $this->redirectWithMessage($response, 'changePassword', "error", ["Error!", "Passwords don't match!"]);
             }
         }
         return $response;

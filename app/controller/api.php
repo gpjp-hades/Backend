@@ -33,10 +33,10 @@ final class api {
             $config = $this->container->db->get("systems", 
                 ["[>]categories" => ["category" => "id"]], 
                 "categories.config",
-                ["pc.uid" => $this->token]
+                ["systems.uid" => $args['token']]
             );
             $this->container->logger->addInfo("Api call - known:config");
-            return $response->withJson(["result" => "approved", "config" => $config['config']]);
+            return $response->withJson(["result" => "approved", "config" => $config]);
         }
     }
 
