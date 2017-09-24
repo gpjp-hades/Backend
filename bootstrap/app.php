@@ -9,6 +9,8 @@ $config['displayErrorDetails'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";
 
+session_start();
+
 $app = new \Slim\App(["settings" => $config]);
 $container = $app->getContainer();
 
@@ -29,6 +31,12 @@ $app->add(function (Request $request, Response $response, callable $next) {
 
     return $next($request, $response);
 });
+
+$container['csrf'] = function ($c) {
+    return new \Slim\Csrf\Guard;
+};
+
+$app->add($container->csrf);
 
 $container['auth'] = function($c) {
     $auth = new \auth($c);

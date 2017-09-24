@@ -11,9 +11,15 @@ class home {
     }
 
     function dashboard($request, $response, $args) {
-        //$this->container->logger->addInfo("Ticket list");
-        
-        $response = $this->container->view->render($response, "dashboard.phtml");
+        $pending    = $this->container->db->select("systems", ["name", "uid"], ["approved" => false]);
+        $approved   = $this->container->db->select("systems", "*", ["approved" => true]);
+        $categories = $this->container->db->select("categories", "*");
+
+        $response = $this->container->view->render($response, "dashboard.phtml", [
+            "pending"    => $pending,
+            "approved"   => $approved,
+            "categories" => $categories
+        ]);
         return $response;
     }
 }

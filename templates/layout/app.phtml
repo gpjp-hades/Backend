@@ -10,22 +10,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 <body>
-<?php
-    require_once "navbar.phtml"
-?>
+<?php require_once "navbar.phtml"?>
+<?php if(is_string(@$error) || is_string(@$status)):?>
 <div class="container">
 <div class="col-md-6 col-md-offset-3">
-<?php
-if (is_string(@$error)) {
-    echo "<div class='alert alert-danger'>
-        <strong>Error!</strong> $error
-    </div>";
-}
-if (is_string(@$status)) {
-    echo "<div class='alert alert-success'>
-    <strong>Success!</strong> $status
-</div>";
-}
-?>
+<?php if (is_string(@$error)):?>
+    <div class='alert alert-danger'>
+        <strong>Error!</strong> <?=$error?>
+    </div>
+<?php endif; if (is_string(@$status)):?>
+    <div class='alert alert-success'>
+    <strong>Success!</strong> <?=$status?>
+</div>
+<?php endif?>
 </div>
 </div>
+<?php endif?>

@@ -9,7 +9,6 @@ class auth {
     function __construct(\Slim\Container $container) {
         $this->container = $container;
         $this->db = $this->container->db;
-        session_start();
 
         if ($this->logged()) {
             $this->user = $this->db->get("users", "*", ["token" => $_SESSION['token']]);
