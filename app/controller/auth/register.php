@@ -13,49 +13,55 @@ class register {
     }
 
     function __invoke($request, $response) {
-        
-        $users = [];
-        foreach ($this->container->db->select("users", ["id", "name"]) as $user) {
-            $users[$user['id']] = $user['name'];
-        }
 
         if ($request->isGet()) {
 
-            $this->sendResponse($request, $response, [
-                "users" => $users
-            ] + $this->container->flash->getMessages());
+            $this->sendResponse($request, $response, "auth/register.phtml");
 
-        } elseif ($request->isDelete()) {
+        } elseif ($request->isPut()) {
 
             $data = $request->getParsedBody();
-            $id = filter_var(@$data['id'], FILTER_SANITIZE_STRING);
+            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+            $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
+            $pass2 = filter_var(@$data['pass2'], FILTER_SANITIZE_STRING);
 
             if ($request->getAttribute('csrf_status') === false) {
 
                 $this->container->logger->addInfo("CSRF failed for userManage");
-                $this->sendResponse($request, $response, [
+                $this->sendResponse($request, $response, "auth/register.phtml", [
                     "error" => [["Communication error!", "Please try again"]]
                 ]);
 
-            } else if (is_string($id) && strlen($id) > 0) {
+            } else if ($this->container->db->has("users", ["name" => $name])) {
+                $this->container->flash->addMessage("error", [
+                    "Error!", "Username alredy taken!"
+                ]);
+
+                $response = $response->withRedirect($this->container->router->pathFor('register'), 301);
+            } else if (
+                is_string($name) && strlen($name) > 0 &&
+                is_string($pass) && strlen($pass) > 0 &&
+                $pass === $pass2
+            ) {
                 
-                if ($users[$id] == 'admin') {
-                    $this->sendResponse($request, $response, [
-                        "users" => $users,
-                        "error" => [["Removal failed!", "Cannot remove the Admin account"]]
+                if ($this->container->auth->register($name, $pass)) {
+                    
+                    $this->container->flash->addMessage("status", [
+                        "Success!", "User " . $users[$id]. " was created!"
                     ]);
+
+                    $response = $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
                 } else {
-
-                    $this->container->db->delete("users", ["id" => $id]);
-
-                    $this->container->flash->addMessage("status", ["Removal successfull!", "User " . $users[$id]. " was removed!"]);
-                    return $response->withRedirect($this->container->router->pathFor('manageUsers'), 301);
+                    $this->sendResponse($request, $response, "auth/register.phtml", [
+                        "error" => [["Error!", "Use only ASCII in UnserName & keep it short!"]]
+                    ]);
                 }
             } else {
-                $this->sendResponse($request, $response, [
-                    "users" => $users,
-                    "error" => [["Removal failed!", "No user specified"]]
+                $this->container->flash->addMessage("error", [
+                    "Error!", "Passwords don't match!"
                 ]);
+
+                $response = $response->withRedirect($this->container->router->pathFor('register'), 301);
             }
         }
         return $response;

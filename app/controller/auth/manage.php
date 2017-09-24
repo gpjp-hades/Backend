@@ -40,10 +40,11 @@ class manage {
             } else if (is_string($id) && strlen($id) > 0) {
                 
                 if ($users[$id] == 'admin') {
-                    $this->sendResponse($request, $response, "auth/manage.phtml", [
-                        "users" => $users,
-                        "error" => [["Removal failed!", "Cannot remove the Admin account"]]
-                    ], "auth/manage.phtml");
+                    $this->container->flash->addMessage("error", [
+                        "Removal failed!", "Cannot remove the Admin account"
+                    ]);
+    
+                    $response = $response->withRedirect($this->container->router->pathFor('manageUsers'), 301);
                 } else {
 
                     $this->container->db->delete("users", ["id" => $id]);

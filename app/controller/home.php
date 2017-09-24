@@ -4,6 +4,8 @@ namespace controller;
 
 class home {
     
+    use \controller\sendResponse;
+    
     protected $container;
 
     function __construct(\Slim\Container $container) {
@@ -15,7 +17,7 @@ class home {
         $approved   = $this->container->db->select("systems", "*", ["approved" => true]);
         $categories = $this->container->db->select("categories", "*");
 
-        $response = $this->container->view->render($response, "dashboard.phtml", [
+        $response = $this->sendResponse($request, $response, "dashboard.phtml", [
             "pending"    => $pending,
             "approved"   => $approved,
             "categories" => $categories

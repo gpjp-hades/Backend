@@ -19,8 +19,9 @@ final class routes {
                 //logout
                 $this->post('/logout', \controller\auth\logout::class)->setName('logout');
 
+                $this->map(['GET', 'PUT'], '/register', \controller\auth\register::class)->setName('register');
+                $this->map(['GET', 'PUT'], '/changepass', \controller\auth\changePassword::class)->setName('changePassword');
 
-                //$this->map(['GET', 'PUT'], '/register', \controller\auth::class . ':register')->setName('register');
                 $this->map(['GET', 'DELETE'], '/manage', \controller\auth\manage::class)->setName('manageUsers');
 
             })->add(\middleware\auth::class);

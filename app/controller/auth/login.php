@@ -33,7 +33,7 @@ class login {
                 
                 if ($this->container->auth->login($name, $pass)) {
                     $this->container->logger->addInfo("Auth successfull for user " . $name);
-                    return $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
+                    $response =  $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
                 } else {
                     $this->container->logger->addInfo("Auth failed for user " . $name);
 
