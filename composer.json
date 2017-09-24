@@ -9,7 +9,7 @@
         "psr-4": {
             "": "app/",
             "middleware\\": "app/middleware/",
-            "database\\": "database/",
+            "database\\": "db/",
             "controller\\": "app/controller/"
         }
     }

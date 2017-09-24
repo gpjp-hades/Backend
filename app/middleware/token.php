@@ -8,11 +8,15 @@ class token {
 
     public function __invoke($request, $response, $next) {
         
-        $args = $request->getAttribute('routeInfo')[2];
-        $token = $args['token'];
+        $routeInfo = $request->getAttribute('routeInfo');
+        $token = strtoupper($routeInfo[2]['token']);
 
         sleep(self::sleep);
-        if (!preg_match('/([^0-9A-F])|(^.{65,}$)/', $token)) {
+        if (!preg_match('/([^0-9A-F])|(^.{5,}$)/', $token)) {
+            
+            $routeInfo[2]['token'] = $token;
+            $request = $request->withAttribute('routeInfo', $routeInfo);
+
             return $next($request, $response);
         } else {
             return $response->withJson(["result" => "invalid request"], 400);

@@ -11,57 +11,36 @@ final class api {
         $this->container = $container;
     }
 
-    function token($request, $response, $args) {
-        $this->container->logger->addInfo("Api call");
+    function __invoke($request, $response, $args) {
         
-        return $response->withJson(["result" => "success"]);
-    }
-    /*
+        if (!$this->container->db->has("systems", ["uid" => $args['token']])) {
 
-    private function register() {
-        if (!$this->valid_token()) {
-            sleep(self::sleep);
-            return $response->withJson(["result" => "invalid request"], 400);
+            $name = $this->escapeName(@$args['name']);
+            $this->container->db->insert("systems", [
+                "uid" => $args['token'],
+                "name" => $name ? $name : null,
+                "lastActive" => time()
+            ]);
+
+            $this->container->logger->addInfo("Api call - new:pending");
+            return $response->withJson(["result" => "request pending"]);
+        } else if ($this->container->db->has("systems", ["uid" => $args['token'], "approved" => false])) {
+
+            $this->container->logger->addInfo("Api call - known:pending");
+            return $response->withJson(["result" => "request pending"]);
+        } else {
+
+            $config = $this->container->db->get("systems", 
+                ["[>]categories" => ["category" => "id"]], 
+                "categories.config",
+                ["pc.uid" => $this->token]
+            );
+            $this->container->logger->addInfo("Api call - known:config");
+            return $response->withJson(["result" => "approved", "config" => $config['config']]);
         }
     }
 
-    private function valid_token() {
-        if (!preg_match('/([^0-9A-F])|(^.{65,}$)/', $this->token))
-            return true;
-        return false;
+    function escapeName($name) {
+        return preg_replace('/[^\x20-\x7E]/','', $name);
     }
-/*
-    if (!$this->valid_token()) {
-        //sleep(5);
-        exit('{"result": "invalid request"}');
-    }
-
-    $this->token = strtoupper($_GET['token']);
-
-    if (!$this->db->has("pc", ["uid" => $this->token])) {
-        $name = preg_replace('/[^\x20-\x7E]/','', @$_GET['name']);
-
-        $this->db->insert("pc", ["uid" => $this->token, "name" => $name, "lastActive" => time()]);
-        //sleep(5);
-        exit('{"result": "request pending"}');
-    } else if ($this->db->has("pc", ["uid" => $this->token, "approved" => false])) {
-        //sleep(5);
-        exit('{"result": "request pending"}');
-    } else {
-        $config = $this->db->get("pc", ["[>]categories" => ["category" => "id"]], ["categories.config"], ["pc.uid" => $this->token]);
-        exit(json_encode(["result" => "approved", "config" => $config['config']]));
-    }
-    
-}
-
-function valid_token() {
-    if (
-        is_string(@$_GET['token']) &&
-        strlen($_GET['token']) == 64 &&
-        !preg_match('/[^\x20-\x7f]/', $_GET['token'])
-    )
-        return true;
-    return false;
-}
-*/
 }

@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 $config['displayErrorDetails'] = true;
 $config['db']['type']   = "sqlite";
-$config['db']['file'] = "../database/database.db";
+$config['db']['file'] = "../db/database.db";
 
 $app = new \Slim\App(["settings" => $config]);
 $container = $app->getContainer();
