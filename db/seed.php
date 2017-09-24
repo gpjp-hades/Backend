@@ -5,6 +5,7 @@ namespace database;
 class seed {
     
     protected $container;
+    protected $db;
 
     function __construct(\Slim\Container $container) {
         $this->container = $container;

@@ -16,7 +16,7 @@ $container = $app->getContainer();
 $app->add(function (Request $request, Response $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
-    if ($path != '/' && substr($path, -1) == '/') {
+    if ($path != '/' && substr($path, -1) == '/' && $path != '/hades/') {
         $uri = $uri->withPath(substr($path, 0, -1));
         
         if($request->getMethod() == 'GET') {
@@ -30,10 +30,21 @@ $app->add(function (Request $request, Response $response, callable $next) {
     return $next($request, $response);
 });
 
-$container['view'] = new \Slim\Views\PhpRenderer("../templates/");
+$container['auth'] = function($c) {
+    $auth = new \auth($c);
+    return $auth;
+};
+
+$container['view'] = function ($container) {
+    $templateVariables = [
+        "router" => $container->router,
+        "auth" => $container->auth
+    ];
+    return new \Slim\Views\PhpRenderer('../templates/', $templateVariables);
+};
 
 $container['logger'] = function($c) {
-    $logger = new \Monolog\Logger('my_logger');
+    $logger = new \Monolog\Logger('hades');
     $file_handler = new \Monolog\Handler\StreamHandler("../logs/app.log");
     $logger->pushHandler($file_handler);
     return $logger;
