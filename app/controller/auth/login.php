@@ -3,6 +3,8 @@
 namespace controller\auth;
 
 class login {
+
+    use \controller\sendResponse;
     
     protected $container;
 
@@ -10,42 +12,37 @@ class login {
         $this->container = $container;
     }
 
-    function sendResponse($request, &$response, $args = []) {
-        $nameKey = $this->container->csrf->getTokenNameKey();
-        $valueKey = $this->container->csrf->getTokenValueKey();
-        $name = $request->getAttribute($nameKey);
-        $value = $request->getAttribute($valueKey);
-
-        $args = array_merge($args, [
-            "csrf" => [
-                "nameKey"  => $nameKey,
-                "name"     => $name,
-                "valueKey" => $valueKey,
-                "value"    => $value
-            ]
-        ]);
-
-        $response = $this->container->view->render($response, "auth/login.phtml", $args);
-    }
-
     function __invoke($request, $response) {
         if ($request->isGet()) {
 
-            $this->sendResponse($request, $response);
+            $this->sendResponse($request, $response, "auth/login.phtml");
 
         } elseif ($request->isPost()) {
 
-            $data = $request->getParsedBody();
-
-            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
-            $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
-            
-            if ($this->container->auth->login($name, $pass)) {
-                return $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
-            } else {
-                $this->sendResponse($request, $response, [
-                    "error" => "Login failed"
+            if ($request->getAttribute('csrf_status') === false) {
+                $this->container->logger->addInfo("CSRF failed for login");
+                $this->sendResponse($request, $response, "auth/login.phtml", [
+                    "error" => [["Communication error!", "Please try again"]]
                 ]);
+            } else {
+
+                $data = $request->getParsedBody();
+
+                $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+                $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
+                
+                if ($this->container->auth->login($name, $pass)) {
+                    $this->container->logger->addInfo("Auth successfull for user " . $name);
+                    return $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
+                } else {
+                    $this->container->logger->addInfo("Auth failed for user " . $name);
+
+                    $this->container->flash->addMessage("error", [
+                        "Login failed!", "Please try again"
+                    ]);
+
+                    $response = $response->withRedirect($this->container->router->pathFor('login'), 301);
+                }
             }
         }
 

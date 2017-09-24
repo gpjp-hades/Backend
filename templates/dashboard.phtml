@@ -4,7 +4,7 @@
     <div class="panel panel-primary">
     <div class="panel-heading"><strong>Pending approval</strong></div>
     <div class="panel-body">
-    <?php if (is_array($pending)):?>
+    <?php if (is_array($pending) && count($pending)):?>
         <div class='list-group'>
         <?php foreach($pending as $pc):?>
             <li class='list-group-item'>
@@ -23,7 +23,7 @@
     <div class="panel panel-default">
     <div class="panel-heading"><strong>Systems</strong></div>
     <div class="panel-body">
-    <?php if(is_array($approved)):?>
+    <?php if(is_array($approved) && count($approved)):?>
         <ul class='list-group'>
         <?php foreach($approved as $ap):?>
             <li class='list-group-item'>

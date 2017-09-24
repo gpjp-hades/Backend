@@ -32,15 +32,13 @@ $app->add(function (Request $request, Response $response, callable $next) {
     return $next($request, $response);
 });
 
-$container['csrf'] = function ($c) {
-    return new \Slim\Csrf\Guard;
-};
-
-$app->add($container->csrf);
-
 $container['auth'] = function($c) {
     $auth = new \auth($c);
     return $auth;
+};
+
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
 };
 
 $container['view'] = function ($container) {
@@ -57,6 +55,17 @@ $container['logger'] = function($c) {
     $logger->pushHandler($file_handler);
     return $logger;
 };
+
+$container['csrf'] = function ($c) {
+    $guard = new \Slim\Csrf\Guard();
+    $guard->setFailureCallable(function ($request, $response, $next) {
+        $request = $request->withAttribute("csrf_status", false);
+        return $next($request, $response);
+    });
+    return $guard;
+};
+
+$app->add($container->csrf);
 
 $container['db'] = function ($c) {
     $db = $c['settings']['db'];

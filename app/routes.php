@@ -6,17 +6,23 @@ final class routes {
 
         $app->group('/hades', function() {
             
+            //api
             $this->get('/api/{token}[/{name}]', \controller\api::class)->add(\middleware\token::class);
 
+            //dashboard
             $this->get('/', \controller\home::class . ':dashboard')->add(\middleware\auth::class)->setName('dashboard');
             
+            //auth
             $this->map(['GET', 'POST'], '/login', \controller\auth\login::class)->setName('login');
             $this->group('/user', function() {
-/*
-                $this->post('/logout', \controller\auth::class . ':logout')->setName('logout');
-                $this->map(['GET', 'PUT'], '/register', \controller\auth::class . ':register')->setName('register');
-                $this->map(['GET', 'DELETE'], '/manage', \controller\auth::class . ':manage')->setName('manage');
-*/
+
+                //logout
+                $this->post('/logout', \controller\auth\logout::class)->setName('logout');
+
+
+                //$this->map(['GET', 'PUT'], '/register', \controller\auth::class . ':register')->setName('register');
+                $this->map(['GET', 'DELETE'], '/manage', \controller\auth\manage::class)->setName('manageUsers');
+
             })->add(\middleware\auth::class);
 
         });

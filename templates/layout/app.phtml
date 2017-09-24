@@ -11,17 +11,21 @@
 </head>
 <body>
 <?php require_once "navbar.phtml"?>
-<?php if(is_string(@$error) || is_string(@$status)):?>
+<?php if(is_array(@$error) || is_array(@$status)):?>
 <div class="container">
 <div class="col-md-6 col-md-offset-3">
-<?php if (is_string(@$error)):?>
+<?php if (is_array(@$error)):?>
+<?php foreach($error as $err):?>
     <div class='alert alert-danger'>
-        <strong>Error!</strong> <?=$error?>
+        <strong><?=$err[0]?></strong> <?=$err[1]?>
     </div>
-<?php endif; if (is_string(@$status)):?>
+<?php endforeach?>
+<?php endif; if (is_array(@$status)):?>
+<?php foreach($status as $line):?>
     <div class='alert alert-success'>
-    <strong>Success!</strong> <?=$status?>
-</div>
+        <strong><?=$line[0]?></strong> <?=$line[1]?>
+    </div>
+<?php endforeach?>
 <?php endif?>
 </div>
 </div>
