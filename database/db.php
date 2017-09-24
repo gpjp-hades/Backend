@@ -1,6 +1,6 @@
 <?php
 
-namespace app;
+namespace hades\database;
 
 require "Medoo.php";
 
@@ -8,7 +8,7 @@ class db extends \Medoo\Medoo {
     function __construct() {
         $config = [
             'database_type' => 'sqlite',
-            'database_file' => 'app/database.db'
+            'database_file' => __DIR__.'/database.db'
         ];
         parent::__construct($config);
 
