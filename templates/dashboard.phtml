@@ -58,10 +58,10 @@
     <div class="panel-body">
         <div class='list-group'>
         <?php foreach ($categories as $id => $group):?>
-            <a class='list-group-item' href='?group=<?=$id?>'><?=$group['name']?></a>
+            <a class='list-group-item' href='<?=$router->pathFor("group", ["id" => $id])?>'><?=$group['name']?></a>
         <?php endforeach?>
         </div>
-        <a href="?group=new">Create new group</a>
+        <a href="<?=$router->pathFor("group", ["id" => "new"])?>">Create new group</a>
     </div>
     </div>
     </div>

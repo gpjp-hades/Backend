@@ -16,53 +16,81 @@ class group {
 
         if ($request->isGet()) {
 
-            $info = $this->container->db->get("systems", "*", ["AND" => ["id" => $args['id'], "approved" => false]]);
+            if ($args['id'] == "new") {
+                
+                $info = [
+                    "id" => "new",
+                    "config" => "",
+                    "name" => "Create Group"
+                ];
 
-            if (!$info) {
-                $this->redirectWithMessage($response, 'dashboard', "error", ["System not found!", ""]);
+                $response = $this->sendResponse($request, $response, "info/group.phtml", ["info" => $info]);
             } else {
-                $groups = $this->container->db->select("categories", ["id", "name"]);
-
-                $response = $this->sendResponse($request, $response, "info/approve.phtml", [
-                    "info"    => $info,
-                    "groups"   => $groups
-                ]);
+                $info = $this->container->db->get("categories", "*", ["id" => $args['id']]);
+                
+                if (!$info) {
+                    $this->redirectWithMessage($response, 'dashboard', "error", ["Group not found!", ""]);
+                } else {
+                    $response = $this->sendResponse($request, $response, "info/group.phtml", [
+                        "info"    => $info,
+                    ]);
+                }   
             }
 
         } else if ($request->isPut()) {
 
             $data = $request->getParsedBody();
+
+            $config = filter_var(@$data['config'], FILTER_SANITIZE_STRING);
             
-            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
-            $group = filter_var(@$data['group'], FILTER_SANITIZE_STRING);
-            $wiki = filter_var(@$data['wiki'], FILTER_SANITIZE_STRING);
+            if ($args['id'] == "new") {
 
-            if (
-                !(is_string($name) &&
-                strlen($name)) ||
-                preg_match('/[^\x20-\x7f]/', $name)
-            ) {
-                $this->redirectWithMessage($response, "approve", "error", ["Name is missing!", "Use only ASCII"], ["id" => $args["id"]]);
-
-            } else if (
-                !is_string($group) ||
-                !$this->container->db->has("categories", ["id" => $group])
-            ) {
-
-                $this->redirectWithMessage($response, "approve", "error", ["Group not found!", ""], ["id" => $args["id"]]);
+                $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+    
+                if (
+                    !(is_string($name) &&
+                    strlen($name)) ||
+                    preg_match('/[^\x20-\x7f]/', $name)
+                ) {
+                    $this->redirectWithMessage($response, "group", "error", ["Name is missing!", "Use only ASCII"], ["id" => $args["id"]]);
+    
+                } else if (
+                    $this->container->db->has("categories", ["name" => $name])
+                ) {
+    
+                    $this->redirectWithMessage($response, "group", "error", ["Group name alredy in use!", "Choose a different one."], ["id" => $args["id"]]);
+                } else {
+                    $this->container->db->insert("categories", [
+                        "name" => $name,
+                        "config" => $config
+                    ]);
+    
+                    $this->redirectWithMessage($response, "dashboard", "status", ["Group created!", ""]);
+                }
             } else {
-                $this->container->db->update("systems", [
-                    "name" => $name,
-                    "category" => $group,
-                    "wikilink" => $wiki,
-                    "approved" => true,
-                    "lastActive" => time()
-                ], ["id" => $args['id']]);
+                if (!$this->container->db->has("categories", ["id" => $args['id']])) {
 
-                $this->redirectWithMessage($response, "dashboard", "status", ["System approved!", ""]);
+                    $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
+                } else {
+
+                    $this->container->db->update("categories", [
+                        "config" => $config
+                    ], ["id" => $args['id']]);
+
+                    $this->redirectWithMessage($response, "dashboard", "status", ["Group updated!", ""]);
+                }
+            }
+        } else if ($request->isDelete()) {
+            if ($args['id'] === 0) {
+                $this->redirectWithMessage($response, "dashboard", "error", ["Cannot remove Default group", ""]);
+            } else if (!$this->container->db->has("categories", ["id" => $args['id']])) {
+                $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
+            } else {
+                $this->container->db->delete("categories", ["id" => $args['id']]);
+
+                $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
             }
         }
-
         return $response;
     }
 }

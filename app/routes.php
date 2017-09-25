@@ -11,7 +11,7 @@ final class routes {
                 
                 $this->map(['GET', 'PUT', 'DELETE'], '/approve/{id}', \controller\info\approve::class)->setName('approve');
                 $this->map(['GET', 'PUT', 'DELETE'], '/system/{id}', \controller\info\system::class)->setName('system');
-                $this->map(['GET', 'PUT'], '/group/{id}', \controller\info\group::class)->setName('group');
+                $this->map(['GET', 'PUT', 'DELETE'], '/group/{id}', \controller\info\group::class)->setName('group');
                 
                 $this->group('/user', function() {
     
