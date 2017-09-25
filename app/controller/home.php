@@ -15,7 +15,14 @@ class home {
     function __invoke($request, $response, $args) {
         $pending    = $this->container->db->select("systems", "*", ["approved" => false]);
         $approved   = $this->container->db->select("systems", "*", ["approved" => true]);
-        $categories = $this->container->db->select("categories", "*");
+        $categories = [];
+
+        foreach ($this->container->db->select("categories", "*") as $cat) {
+            $categories[$cat['id']] = [
+                "name" => $cat['name'],
+                "config" => $cat['config']
+            ];
+        }
 
         $response = $this->sendResponse($request, $response, "dashboard.phtml", [
             "pending"    => $pending,

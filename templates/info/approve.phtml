@@ -9,7 +9,6 @@
         <input type="hidden" name="_METHOD" value="PUT" />
         <input type="hidden" name="<?= $csrf['nameKey'] ?>" value="<?= $csrf['name'] ?>">
         <input type="hidden" name="<?= $csrf['valueKey'] ?>" value="<?= $csrf['value'] ?>">
-        <input type="hidden" name="id" value="<?=$info['id']?>">
         <div class="form-group">
             <label class="col-md-4 control-label">UID:</label>
             <p class="col-md-6 form-control-static"><code id="trim"><?=$info['uid']?></code></p>
@@ -17,7 +16,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="name">Name:</label>
             <div class="col-md-6">
-                <strong><input class="form-control" type="text" name="name" id="name" required></strong>
+                <strong><input class="form-control" type="text" name="name" id="name" value="<?=$info['name']?>" required autofocus></strong>
             </div>
         </div>
         <div class="form-group">

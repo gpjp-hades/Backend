@@ -63,7 +63,7 @@ class system {
             if (!$info) {
                 $this->redirectWithMessage($response, 'dashboard', "error", ["System not found!", ""]);
             } else {
-                $groups = $this->container->db->get("categories", ["id", "name"]);
+                $groups = $this->container->db->select("categories", ["id", "name"]);
 
                 $response = $this->sendResponse($request, $response, "info/system.phtml", [
                     "info"    => $info,
@@ -72,6 +72,36 @@ class system {
             }
 
         } else if ($request->isPut()) {
+
+            $data = $request->getParsedBody();
+            
+            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+            $group = filter_var(@$data['group'], FILTER_SANITIZE_STRING);
+            $wiki = filter_var(@$data['wiki'], FILTER_SANITIZE_STRING);
+
+            if (
+                !(is_string($name) &&
+                strlen($name)) ||
+                preg_match('/[^\x20-\x7f]/', $name)
+            ) {
+                $this->redirectWithMessage($response, "system", "error", ["Name is missing!", "Use only ASCII"], $args);
+
+            } else if (
+                !is_string($group) ||
+                !$this->container->db->has("categories", ["id" => $group])
+            ) {
+
+                $this->redirectWithMessage($response, "system", "error", ["Group not found!", ""], ["id" => $args["id"]]);
+            } else {
+                $this->container->db->update("systems", [
+                    "name" => $name,
+                    "category" => $group,
+                    "wikilink" => $wiki,
+                    "lastActive" => time()
+                ], ["id" => $args['id']]);
+
+                $this->redirectWithMessage($response, "dashboard", "status", ["System updated!", ""]);
+            }
             
         } else if ($request->isDelete()) {
             

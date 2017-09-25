@@ -9,10 +9,14 @@
         <div class='list-group'>
         <?php foreach($pending as $pc):?>
             <li class='list-group-item'>
-                <a class='list-group-item-heading' href='<?=$router->pathFor('approve', ['id' => $pc['id']])?>'>
-                    <strong><?=strlen($pc['name']) ? $pc['name'] : "unknown"?></strong>
+            <h4 class='list-group-item-heading'>
+                <a href='<?=$router->pathFor('approve', ['id' => $pc['id']])?>'>
+                    <?=strlen($pc['name']) ? $pc['name'] : "unknown"?>
                 </a><br />
-                <code id="trim"><?=$pc['uid']?></code>
+                <small>
+                    UID: <code id="trim"><?=$pc['uid']?></code>
+                </small>
+            </h4>
             </li>
         <?php endforeach?>
         </div>
@@ -32,13 +36,13 @@
                 <?php if (strlen($ap['wikilink'])):?>
                     <a href='<?=$ap['wikilink']?>' class='btn btn-default pull-right btn-xs'>DokuWiki</a>
                 <?php endif?>
-                    <a href='?info=<?=$ap['uid']?>'><?=$ap['name']?></a><br />
+                    <a href='<?=$router->pathFor("system", ["id" => $ap['id']])?>'><?=$ap['name']?></a><br />
                     <small>
-                        UID:<code id="trim"><?=$ap['uid']?></code>
+                        UID: <code id="trim"><?=$ap['uid']?></code>
                     </small>
                 </h4>
                 <p class='list-group-item-text'>
-                    Group: <strong><?=$categories[$ap['category']]?></strong><br />
+                    Group: <strong><?=$categories[$ap['category']]['name']?></strong><br />
                     Last active: <strong><?=date('d. m. Y H:i:s',  $ap['lastActive'])?></strong>
                 </p>
             </li>
@@ -53,8 +57,8 @@
     <div class="panel-heading"><strong>Groups</strong></div>
     <div class="panel-body">
         <div class='list-group'>
-        <?php foreach ($categories as $group):?>
-            <a class='list-group-item' href='?group=<?=$group['id']?>'><?=$group['name']?></a>
+        <?php foreach ($categories as $id => $group):?>
+            <a class='list-group-item' href='?group=<?=$id?>'><?=$group['name']?></a>
         <?php endforeach?>
         </div>
         <a href="?group=new">Create new group</a>
