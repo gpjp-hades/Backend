@@ -40,25 +40,15 @@ class manage {
             } else if (is_string($id) && strlen($id) > 0) {
                 
                 if ($users[$id] == 'admin') {
-                    $this->container->flash->addMessage("error", [
-                        "Removal failed!", "Cannot remove the Admin account"
-                    ]);
-    
-                    $response = $response->withRedirect($this->container->router->pathFor('manageUsers'), 301);
+                    $this->redirectWithMessage($response, 'manageUsers', "error", ["Removal failed!", "Cannot remove the Admin account"]);
                 } else {
 
                     $this->container->db->delete("users", ["id" => $id]);
 
-                    $this->container->flash->addMessage("status", [
-                        "Removal successfull!", "User " . $users[$id]. " was removed!"
-                    ]);
-                    $response = $response->withRedirect($this->container->router->pathFor('manageUsers'), 301);
+                    $this->redirectWithMessage($response, 'manageUsers', "status", ["Removal successfull!", "User " . $users[$id]. " was removed!"]);
                 }
             } else {
-                $this->sendResponse($request, $response, "auth/manage.phtml", [
-                    "users" => $users,
-                    "error" => [["Removal failed!", "No user specified"]]
-                ], "auth/manage.phtml");
+                $this->redirectWithMessage($response, 'manageUsers', "error", ["Removal failed!", "No user specified"]);
             }
         }
         return $response;

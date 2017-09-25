@@ -33,11 +33,8 @@ class register {
                 ]);
 
             } else if ($this->container->db->has("users", ["name" => $name])) {
-                $this->container->flash->addMessage("error", [
-                    "Error!", "Username alredy taken!"
-                ]);
 
-                $response = $response->withRedirect($this->container->router->pathFor('register'), 301);
+                $this->redirectWithMessage($response, 'register', "error", ["Error!", "Username alredy taken!"]);
             } else if (
                 is_string($name) && strlen($name) > 0 &&
                 is_string($pass) && strlen($pass) > 0 &&
@@ -46,22 +43,14 @@ class register {
                 
                 if ($this->container->auth->register($name, $pass)) {
                     
-                    $this->container->flash->addMessage("status", [
-                        "Success!", "User " . $users[$id]. " was created!"
-                    ]);
-
-                    $response = $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
+                    $this->redirectWithMessage($response, 'dashboard', "status", ["Success!", "User " . $users[$id]. " was created!"]);
                 } else {
                     $this->sendResponse($request, $response, "auth/register.phtml", [
                         "error" => [["Error!", "Use only ASCII in UnserName & keep it short!"]]
                     ]);
                 }
             } else {
-                $this->container->flash->addMessage("error", [
-                    "Error!", "Passwords don't match!"
-                ]);
-
-                $response = $response->withRedirect($this->container->router->pathFor('register'), 301);
+                $this->redirectWithMessage($response, 'register', "error", ["Error!", "Passwords don't match!"]);
             }
         }
         return $response;
