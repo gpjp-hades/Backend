@@ -35,6 +35,7 @@ class login {
                     $this->container->logger->addInfo("Auth successfull for user " . $name);
                     $response =  $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
                 } else {
+                    sleep(2);
                     $this->container->logger->addInfo("Auth failed for user " . $name);
 
                     $this->redirectWithMessage($response, 'login', "error", ["Login failed!", "Please try again"]);

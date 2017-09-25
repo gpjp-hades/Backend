@@ -37,7 +37,12 @@ class system {
             $group = filter_var(@$data['group'], FILTER_SANITIZE_STRING);
             $wiki = filter_var(@$data['wiki'], FILTER_SANITIZE_STRING);
 
-            if (
+            if ($request->getAttribute('csrf_status') === false) {
+                $this->container->logger->addInfo("CSRF failed for system:put");
+                $this->sendResponse($request, $response, "info/system.phtml", [
+                    "error" => [["Communication error!", "Please try again"]]
+                ]);
+            } else if (
                 !(is_string($name) &&
                 strlen($name)) ||
                 preg_match('/[^\x20-\x7f]/', $name)
@@ -62,8 +67,12 @@ class system {
             }
             
         } else if ($request->isDelete()) {
-            
-            if ($this->container->db->has("systems", ["AND" => ["id" => $args['id'], "approved" => true]])) {
+            if ($request->getAttribute('csrf_status') === false) {
+                $this->container->logger->addInfo("CSRF failed for system:delete");
+                $this->sendResponse($request, $response, "info/system.phtml", [
+                    "error" => [["Communication error!", "Please try again"]]
+                ]);
+            } else if ($this->container->db->has("systems", ["AND" => ["id" => $args['id'], "approved" => true]])) {
                 $this->container->db->delete("systems", ["id" => $args['id']]);
 
                 $this->redirectWithMessage($response, 'dashboard', "status", ["System removed!", ""]);
