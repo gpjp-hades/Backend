@@ -1,24 +1,29 @@
 <?php
 
-namespace app;
-
 class auth {
-    function __construct() {
-        session_start();
-        require_once "app/db.php";
+    
+    protected $container;
+    protected $db;
+    public $user;
+    
+    function __construct(\Slim\Container $container) {
+        $this->container = $container;
+        $this->db = $this->container->db;
 
-        $this->db = new db();
+        if ($this->logged()) {
+            $this->user = $this->db->get("users", "*", ["token" => $_SESSION['token']]);
+        }
     }
 
-    function login($uname, $passw) {
-        if ($hash = $this->db->get("users", "passw", ["uname" => $uname])) {
-            if (password_verify($passw, $hash)) {
+    function login($name, $pass) {
+        if ($hash = $this->db->get("users", "pass", ["name" => $name])) {
+            if (password_verify($pass, $hash)) {
                 do {
                     $token = bin2hex(\openssl_random_pseudo_bytes(4));
                 } while ($this->db->has("users", ["token" => $token]));
                 
                 $_SESSION['token'] = $token;
-                $this->db->update("users", ["token" => $token], ["uname" => $uname]);
+                $this->db->update("users", ["token" => $token], ["name" => $name]);
                 return true;
             }
             return false;
@@ -35,37 +40,24 @@ class auth {
         return true;
     }
 
-    function register($uname, $passw) {
-        if ($this->db->has("users", ["uname" => $uname]))
+    function register($name, $pass) {
+        if ($this->db->has("users", ["name" => $name]))
             return false;
         
-        if (strlen($uname) > 20 || strlen($passw) > 20)
+        if (strlen($name) > 20 || strlen($pass) > 20)
             return false;
         
-        if (preg_match('/[^\x20-\x7f]/', $uname))
+        if (preg_match('/[^\x20-\x7f]/', $name))
             return false;
         
-        $hash = \password_hash($passw, \PASSWORD_DEFAULT);
-
-        $this->db->insert("users", ["uname" => $uname, "passw" => $hash]);
+        $hash = \password_hash($pass, \PASSWORD_DEFAULT);
+        $this->db->insert("users", ["name" => $name, "pass" => $hash]);
         return true;
     }
 
     function logged() {
         if ($this->hasToken() && $this->db->has("users", ["token" => $_SESSION['token']]))
             return true;
-        return false;
-    }
-    
-    static function auth() {
-        @session_start();
-        require_once "app/db.php";
-        $db = new db();
-        if (is_string(@$_SESSION['token']) && 
-            strlen(@$_SESSION['token']) == 8 && 
-            $uname = $db->get("users", "uname", ["token" => $_SESSION['token']])
-        )
-            return $uname;
         return false;
     }
 
@@ -75,18 +67,18 @@ class auth {
         return false;
     }
 
-    function chagePassw($passw) {
+    function changePass($pass) {
         if (!$this->logged())
             return false;
         
-        $this->db->update("users", ["passw" => password_hash($passw, PASSWORD_DEFAULT)], ["token" => $_SESSION['token']]);
+        $this->db->update("users", ["pass" => password_hash($pass, PASSWORD_DEFAULT)], ["token" => $_SESSION['token']]);
         return true;
     }
 
-    function checkPassword($passw) {
+    function checkPassword($pass) {
         if (!$this->logged())
             return false;
         
-        return password_verify($passw, $this->db->get("users", "passw", ["token" => $_SESSION['token']]));
+        return password_verify($pass, $this->db->get("users", "pass", ["token" => $_SESSION['token']]));
     }
 }
