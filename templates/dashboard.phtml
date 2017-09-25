@@ -2,6 +2,10 @@
 
 <div class="container">
 <div class="col-md-6 col-md-offset-3">
+    <?php /*
+    <button class="btn btn-success btn-lg center-block">Enable registration</button>
+    <hr>
+    */?>
     <div class="panel panel-primary">
     <div class="panel-heading"><strong>Pending approval</strong></div>
     <div class="panel-body">
@@ -14,7 +18,7 @@
                     <?=strlen($pc['name']) ? $pc['name'] : "unknown"?>
                 </a><br />
                 <small>
-                    UID: <code id="trim"><?=$pc['uid']?></code>
+                    UID: <code><?=strlen($pc['uid'])>31?substr($pc['uid'],0,29)."...":$pc['uid']?></code>
                 </small>
             </h4>
             </li>
@@ -38,7 +42,7 @@
                 <?php endif?>
                     <a href='<?=$router->pathFor("system", ["id" => $ap['id']])?>'><?=$ap['name']?></a><br />
                     <small>
-                        UID: <code id="trim"><?=$ap['uid']?></code>
+                        UID: <code><?=strlen($ap['uid'])>31?substr($ap['uid'],0,29)."...":$ap['uid']?></code>
                     </small>
                 </h4>
                 <p class='list-group-item-text'>
@@ -62,7 +66,6 @@
         <?php endforeach?>
         </div>
         <a href="<?=$router->pathFor("group", ["id" => "new"])?>">Create new group</a>
-    </div>
     </div>
     </div>
 </div>

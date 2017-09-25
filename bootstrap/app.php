@@ -5,9 +5,11 @@ require '../vendor/autoload.php';
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-$config['displayErrorDetails'] = true;
+$config['displayErrorDetails'] = false;
+$config['addContentLengthHeader'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";
+$config['name'] = "hades";
 
 session_start();
 

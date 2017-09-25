@@ -12,7 +12,7 @@ class token {
         $token = strtoupper($routeInfo[2]['token']);
 
         sleep(self::sleep);
-        if (!preg_match('/([^0-9A-F])|(^.{5,}$)/', $token)) {
+        if (!preg_match('/([^0-9A-F])|(^.{65,}$)/', $token)) {
             
             $routeInfo[2]['token'] = $token;
             $request = $request->withAttribute('routeInfo', $routeInfo);

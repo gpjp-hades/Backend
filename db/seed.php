@@ -14,7 +14,7 @@ class seed {
 
     function update() {
         if (!$this->container->db->has("sqlite_master", ["AND" => ["type" => "table", "OR" => [
-            "name" => ["users", "systems", "categories"]
+            "name" => ["users", "systems", "categories", "config"]
         ]]])) {
             $this->seed();
         }
@@ -29,6 +29,12 @@ class seed {
             token TEXT NULL,
             level INTEGER DEFAULT 0,
             lastActive INTEGER NULL
+        );");
+
+        $this->db->query("CREATE TABLE IF NOT EXISTS config (
+            id INTEGER PRIMARY KEY,
+            conf_key TEXT,
+            conf_value TEXT
         );");
 
         if (!$this->db->has("users", ["name" => "admin"])) {
