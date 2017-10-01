@@ -4,7 +4,7 @@ namespace middleware;
 
 class token {
     
-    private const sleep = 0;
+    const sleep = 5;
 
     public function __invoke($request, $response, $next) {
         

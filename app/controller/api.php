@@ -5,7 +5,6 @@ namespace controller;
 final class api {
     
     protected $container;
-    private const sleep = 5;
 
     function __construct(\Slim\Container $container) {
         $this->container = $container;
