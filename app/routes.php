@@ -10,7 +10,7 @@ final class routes {
                 $this->get('/', \controller\home::class)->setName('dashboard');
                 
                 $this->map(['GET', 'PUT', 'DELETE'], '/approve/{id}', \controller\info\approve::class)->setName('approve');
-                $this->map(['GET', 'PUT', 'DELETE'], '/system/{id}', \controller\info\system::class)->setName('system');
+                $this->map(['GET', 'PUT', 'DELETE'], '/system/{id}', \controller\info\system::class)->add(\middleware\info\system::class)->setName('system');
                 $this->map(['GET', 'PUT', 'DELETE'], '/group/{id}', \controller\info\group::class)->setName('group');
                 
                 $this->group('/user', function() {

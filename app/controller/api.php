@@ -25,11 +25,13 @@ final class api {
             ]);
 
             $this->container->logger->addInfo("Api call - new:pending");
+
             return $response->withJson(["result" => "request pending"]);
         } else if ($this->container->db->has("systems", ["uid" => $this->token, "approved" => false])) {
 
             $this->container->db->update("systems", ["lastActive" => time()], ["uid" => $this->token]);
             $this->container->logger->addInfo("Api call - known:pending");
+
             return $response->withJson(["result" => "request pending"]);
         } else {
 
@@ -41,6 +43,7 @@ final class api {
 
             $this->container->db->update("systems", ["lastActive" => time()], ["uid" => $this->token]);
             $this->container->logger->addInfo("Api call - known:config");
+            
             return $response->withJson(["result" => "approved", "config" => $config]);
         }
     }

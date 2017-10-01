@@ -4,7 +4,7 @@ namespace controller\info;
 
 class group {
     
-    use \controller\sendResponse;
+    use \traits\sendResponse;
     
     protected $container;
 
@@ -43,12 +43,7 @@ class group {
 
             $config = filter_var(@$data['config'], FILTER_SANITIZE_STRING);
             
-            if ($request->getAttribute('csrf_status') === false) {
-                $this->container->logger->addInfo("CSRF failed for group:put");
-                $this->sendResponse($request, $response, "info/group.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ]);
-            } else if ($args['id'] == "new") {
+            if ($args['id'] == "new") {
 
                 $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
     
@@ -86,12 +81,8 @@ class group {
                 }
             }
         } else if ($request->isDelete()) {
-            if ($request->getAttribute('csrf_status') === false) {
-                $this->container->logger->addInfo("CSRF failed for group:delete");
-                $this->sendResponse($request, $response, "info/group.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ]);
-            } else if ($args['id'] === 0) {
+            
+            if ($args['id'] === 0) {
                 $this->redirectWithMessage($response, "dashboard", "error", ["Cannot remove Default group", ""]);
             } else if (!$this->container->db->has("categories", ["id" => $args['id']])) {
                 $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);

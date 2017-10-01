@@ -68,6 +68,7 @@ $container['csrf'] = function ($c) {
 };
 
 $app->add($container->csrf);
+$app->add(\middleware\csrf::class);
 
 $container['db'] = function ($c) {
     $db = $c['settings']['db'];
