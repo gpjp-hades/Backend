@@ -12,20 +12,20 @@ final class api {
 
     function __invoke($request, $response, $args) {
         
-        if (!$this->container->db->has("systems", ["uid" => $args['token']])) {
+        if (!$this->container->db->has("systems", ["uid" => strtoupper($args['token'])])) {
 
             $name = $this->escapeName(@$args['name']);
             $this->container->db->insert("systems", [
-                "uid" => $args['token'],
+                "uid" => strtoupper($args['token']),
                 "name" => $name ? $name : null,
                 "lastActive" => time()
             ]);
 
             $this->container->logger->addInfo("Api call - new:pending");
             return $response->withJson(["result" => "request pending"]);
-        } else if ($this->container->db->has("systems", ["uid" => $args['token'], "approved" => false])) {
+        } else if ($this->container->db->has("systems", ["uid" => strtoupper($args['token']), "approved" => false])) {
 
-            $this->container->db->update("systems", ["lastActive" => time()], ["uid" => $args['token']]);
+            $this->container->db->update("systems", ["lastActive" => time()], ["uid" => strtoupper($args['token'])]);
             $this->container->logger->addInfo("Api call - known:pending");
             return $response->withJson(["result" => "request pending"]);
         } else {
@@ -33,10 +33,10 @@ final class api {
             $config = $this->container->db->get("systems", 
                 ["[>]categories" => ["category" => "id"]], 
                 "categories.config",
-                ["systems.uid" => $args['token']]
+                ["systems.uid" => strtoupper($args['token'])]
             );
 
-            $this->container->db->update("systems", ["lastActive" => time()], ["uid" => $args['token']]);
+            $this->container->db->update("systems", ["lastActive" => time()], ["uid" => strtoupper($args['token'])]);
             $this->container->logger->addInfo("Api call - known:config");
             return $response->withJson(["result" => "approved", "config" => $config]);
         }
