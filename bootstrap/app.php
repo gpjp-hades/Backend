@@ -5,7 +5,7 @@ require '../vendor/autoload.php';
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-$config['displayErrorDetails'] = false;
+$config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";

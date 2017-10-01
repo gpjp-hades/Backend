@@ -26,7 +26,7 @@ final class routes {
             })->add(\middleware\auth::class);
             
             $this->map(['GET', 'POST'], '/login', \controller\auth\login::class)->setName('login');
-            $this->get('/api/{token}[/{name}]', \controller\api::class)->add(\middleware\token::class);
+            $this->get('/api/{tok}[/{name}]', \controller\api::class)->add(\middleware\token::class);
             
         });
 
