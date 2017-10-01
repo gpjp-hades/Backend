@@ -34,7 +34,7 @@ class group {
                     $response = $this->sendResponse($request, $response, "info/group.phtml", [
                         "info"    => $info,
                     ]);
-                }   
+                }
             }
 
         } else if ($request->isPut()) {
@@ -46,51 +46,26 @@ class group {
             if ($args['id'] == "new") {
 
                 $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
-    
-                if (
-                    !(is_string($name) &&
-                    strlen($name)) ||
-                    preg_match('/[^\x20-\x7f]/', $name)
-                ) {
-                    $this->redirectWithMessage($response, "group", "error", ["Name is missing!", "Use only ASCII"], ["id" => $args["id"]]);
-    
-                } else if (
-                    $this->container->db->has("categories", ["name" => $name])
-                ) {
-    
-                    $this->redirectWithMessage($response, "group", "error", ["Group name alredy in use!", "Choose a different one."], ["id" => $args["id"]]);
-                } else {
-                    $this->container->db->insert("categories", [
-                        "name" => $name,
-                        "config" => $config
-                    ]);
-    
-                    $this->redirectWithMessage($response, "dashboard", "status", ["Group created!", ""]);
-                }
+
+                $this->container->db->insert("categories", [
+                    "name" => $name,
+                    "config" => $config
+                ]);
+
+                $this->redirectWithMessage($response, "dashboard", "status", ["Group created!", ""]);
             } else {
-                if (!$this->container->db->has("categories", ["id" => $args['id']])) {
 
-                    $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
-                } else {
+                $this->container->db->update("categories", [
+                    "config" => $config
+                ], ["id" => $args['id']]);
 
-                    $this->container->db->update("categories", [
-                        "config" => $config
-                    ], ["id" => $args['id']]);
-
-                    $this->redirectWithMessage($response, "dashboard", "status", ["Group updated!", ""]);
-                }
+                $this->redirectWithMessage($response, "dashboard", "status", ["Group updated!", ""]);
             }
         } else if ($request->isDelete()) {
             
-            if ($args['id'] === 0) {
-                $this->redirectWithMessage($response, "dashboard", "error", ["Cannot remove Default group", ""]);
-            } else if (!$this->container->db->has("categories", ["id" => $args['id']])) {
-                $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
-            } else {
-                $this->container->db->delete("categories", ["id" => $args['id']]);
+            $this->container->db->delete("categories", ["id" => $args['id']]);
 
-                $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
-            }
+            $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
         }
         return $response;
     }
