@@ -13,6 +13,8 @@ class group {
     }
 
     function __invoke($request, $response, $args) {
+        
+        $remote = $this->remoteFiles();
 
         if ($request->isGet()) {
 
@@ -24,7 +26,7 @@ class group {
                     "name" => "Create Group"
                 ];
 
-                $response = $this->sendResponse($request, $response, "info/group.phtml", ["info" => $info]);
+                $response = $this->sendResponse($request, $response, "info/group.phtml", ["info" => $info, "configs" => $remote]);
             } else {
                 $info = $this->container->db->get("categories", "*", ["id" => $args['id']]);
                 
@@ -33,6 +35,7 @@ class group {
                 } else {
                     $response = $this->sendResponse($request, $response, "info/group.phtml", [
                         "info"    => $info,
+                        "configs" => $remote
                     ]);
                 }
             }
@@ -68,5 +71,31 @@ class group {
             $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
         }
         return $response;
+    }
+
+    private function remoteFiles() {
+
+        $url = "https://api.github.com/repos/gpjp-hades/Instructions/contents/";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: gpjp-hades"]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch); 
+        curl_close($ch);
+
+        $json = json_decode($output, true);
+
+        if (isset($json['message'])) {
+            return false;
+        } else {
+            $ret = [];
+            foreach ($json as $file) {
+                if ($file['type'] == "file" && $file['name'] == $file['path']) {
+                    array_push($ret, $file);
+                }
+            }
+            return $ret;
+        }
     }
 }
