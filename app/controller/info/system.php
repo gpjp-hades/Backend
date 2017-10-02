@@ -38,10 +38,14 @@ class system {
 
             $data = $request->getParsedBody();
 
+            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+            $group = filter_var(@$data['group'], FILTER_SANITIZE_STRING);
+            $wiki = filter_var(@$data['wiki'], FILTER_SANITIZE_STRING);
+
             $this->container->db->update("systems", [
-                "name" => $data['name'],
-                "category" => $data['group'],
-                "wikilink" => $data['wiki'],
+                "name" => $name,
+                "category" => $group,
+                "wikilink" => $wiki,
                 "lastActive" => time()
             ], ["id" => $args['id']]);
 
