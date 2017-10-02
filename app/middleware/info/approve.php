@@ -2,7 +2,7 @@
 
 namespace middleware\info;
 
-class system {
+class approve {
 
     use \traits\sendResponse;
     
