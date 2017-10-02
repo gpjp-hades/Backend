@@ -72,6 +72,7 @@ class group {
         } else if ($request->isDelete()) {
             
             $this->container->db->delete("categories", ["id" => $args['id']]);
+            $this->container->db->update("systems", ["category" => "0"], ["category" => $args['id']]);
 
             $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
         }
