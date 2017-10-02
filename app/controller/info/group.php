@@ -13,10 +13,15 @@ class group {
     }
 
     function __invoke($request, $response, $args) {
-        
-        $remote = $this->remoteFiles();
 
         if ($request->isGet()) {
+
+            $remote = $this->remoteFiles();
+
+            if (!$remote) {
+                $remote = [["name" => ""]];
+                $this->container->flash->addMessage("error", ["Connection with GitHub failed", "Please try again later"]);
+            }
 
             if ($args['id'] == "new") {
                 
