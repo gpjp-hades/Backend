@@ -4,7 +4,7 @@ namespace controller\auth;
 
 class changePassword {
     
-    use \controller\sendResponse;
+    use \traits\sendResponse;
 
     protected $container;
 
@@ -25,14 +25,7 @@ class changePassword {
             $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
             $pass2 = filter_var(@$data['pass2'], FILTER_SANITIZE_STRING);
 
-            if ($request->getAttribute('csrf_status') === false) {
-
-                $this->container->logger->addInfo("CSRF failed for userManage");
-                $this->sendResponse($request, $response, "auth/change.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ]);
-
-            } else if (!$this->container->auth->checkPassword($old)) {
+            if (!$this->container->auth->checkPassword($old)) {
                 
                 $this->redirectWithMessage($response, 'changePassword', "error", ["Error!", "Wrong current password!"]);
             } else if (

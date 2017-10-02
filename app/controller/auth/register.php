@@ -4,7 +4,7 @@ namespace controller\auth;
 
 class register {
     
-    use \controller\sendResponse;
+    use \traits\sendResponse;
 
     protected $container;
 
@@ -25,14 +25,7 @@ class register {
             $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
             $pass2 = filter_var(@$data['pass2'], FILTER_SANITIZE_STRING);
 
-            if ($request->getAttribute('csrf_status') === false) {
-
-                $this->container->logger->addInfo("CSRF failed for userManage");
-                $this->sendResponse($request, $response, "auth/register.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ]);
-
-            } else if ($this->container->db->has("users", ["name" => $name])) {
+            if ($this->container->db->has("users", ["name" => $name])) {
 
                 $this->redirectWithMessage($response, 'register', "error", ["Error!", "Username alredy taken!"]);
             } else if (

@@ -4,7 +4,7 @@ namespace controller;
 
 class home {
     
-    use \controller\sendResponse;
+    use \traits\sendResponse;
     
     protected $container;
 

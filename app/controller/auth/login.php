@@ -4,7 +4,7 @@ namespace controller\auth;
 
 class login {
 
-    use \controller\sendResponse;
+    use \traits\sendResponse;
     
     protected $container;
 
@@ -19,27 +19,19 @@ class login {
 
         } elseif ($request->isPost()) {
 
-            if ($request->getAttribute('csrf_status') === false) {
-                $this->container->logger->addInfo("CSRF failed for login");
-                $this->sendResponse($request, $response, "auth/login.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ]);
+            $data = $request->getParsedBody();
+
+            $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
+            $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
+            
+            if ($this->container->auth->login($name, $pass)) {
+                $this->container->logger->addInfo("Auth successfull for user " . $name);
+                $response =  $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
             } else {
+                sleep(2);
+                $this->container->logger->addInfo("Auth failed for user " . $name);
 
-                $data = $request->getParsedBody();
-
-                $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
-                $pass = filter_var(@$data['pass'], FILTER_SANITIZE_STRING);
-                
-                if ($this->container->auth->login($name, $pass)) {
-                    $this->container->logger->addInfo("Auth successfull for user " . $name);
-                    $response =  $response->withRedirect($this->container->router->pathFor('dashboard'), 301);
-                } else {
-                    sleep(2);
-                    $this->container->logger->addInfo("Auth failed for user " . $name);
-
-                    $this->redirectWithMessage($response, 'login', "error", ["Login failed!", "Please try again"]);
-                }
+                $this->redirectWithMessage($response, 'login', "error", ["Login failed!", "Please try again"]);
             }
         }
 
