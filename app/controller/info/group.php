@@ -16,6 +16,13 @@ class group {
 
         if ($request->isGet()) {
 
+            $remote = $this->remoteFiles();
+
+            if (!$remote) {
+                $remote = [["name" => ""]];
+                $this->container->flash->addMessage("error", ["Connection with GitHub failed", "Please try again later"]);
+            }
+
             if ($args['id'] == "new") {
                 
                 $info = [
@@ -24,7 +31,7 @@ class group {
                     "name" => "Create Group"
                 ];
 
-                $response = $this->sendResponse($request, $response, "info/group.phtml", ["info" => $info]);
+                $response = $this->sendResponse($request, $response, "info/group.phtml", ["info" => $info, "configs" => $remote]);
             } else {
                 $info = $this->container->db->get("categories", "*", ["id" => $args['id']]);
                 
@@ -33,8 +40,9 @@ class group {
                 } else {
                     $response = $this->sendResponse($request, $response, "info/group.phtml", [
                         "info"    => $info,
+                        "configs" => $remote
                     ]);
-                }   
+                }
             }
 
         } else if ($request->isPut()) {
@@ -46,52 +54,53 @@ class group {
             if ($args['id'] == "new") {
 
                 $name = filter_var(@$data['name'], FILTER_SANITIZE_STRING);
-    
-                if (
-                    !(is_string($name) &&
-                    strlen($name)) ||
-                    preg_match('/[^\x20-\x7f]/', $name)
-                ) {
-                    $this->redirectWithMessage($response, "group", "error", ["Name is missing!", "Use only ASCII"], ["id" => $args["id"]]);
-    
-                } else if (
-                    $this->container->db->has("categories", ["name" => $name])
-                ) {
-    
-                    $this->redirectWithMessage($response, "group", "error", ["Group name alredy in use!", "Choose a different one."], ["id" => $args["id"]]);
-                } else {
-                    $this->container->db->insert("categories", [
-                        "name" => $name,
-                        "config" => $config
-                    ]);
-    
-                    $this->redirectWithMessage($response, "dashboard", "status", ["Group created!", ""]);
-                }
+
+                $this->container->db->insert("categories", [
+                    "name" => $name,
+                    "config" => $config
+                ]);
+
+                $this->redirectWithMessage($response, "dashboard", "status", ["Group created!", ""]);
             } else {
-                if (!$this->container->db->has("categories", ["id" => $args['id']])) {
 
-                    $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
-                } else {
+                $this->container->db->update("categories", [
+                    "config" => $config
+                ], ["id" => $args['id']]);
 
-                    $this->container->db->update("categories", [
-                        "config" => $config
-                    ], ["id" => $args['id']]);
-
-                    $this->redirectWithMessage($response, "dashboard", "status", ["Group updated!", ""]);
-                }
+                $this->redirectWithMessage($response, "dashboard", "status", ["Group updated!", ""]);
             }
         } else if ($request->isDelete()) {
             
-            if ($args['id'] === 0) {
-                $this->redirectWithMessage($response, "dashboard", "error", ["Cannot remove Default group", ""]);
-            } else if (!$this->container->db->has("categories", ["id" => $args['id']])) {
-                $this->redirectWithMessage($response, "dashboard", "error", ["Group not found!", ""]);
-            } else {
-                $this->container->db->delete("categories", ["id" => $args['id']]);
+            $this->container->db->delete("categories", ["id" => $args['id']]);
 
-                $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
-            }
+            $this->redirectWithMessage($response, "dashboard", "status", ["Group removed!", ""]);
         }
         return $response;
+    }
+
+    private function remoteFiles() {
+
+        $url = "https://api.github.com/repos/gpjp-hades/Instructions/contents/";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: gpjp-hades"]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch); 
+        curl_close($ch);
+
+        $json = json_decode($output, true);
+
+        if (isset($json['message'])) {
+            return false;
+        } else {
+            $ret = [];
+            foreach ($json as $file) {
+                if ($file['type'] == "file" && $file['name'] == $file['path']) {
+                    array_push($ret, $file);
+                }
+            }
+            return $ret;
+        }
     }
 }
