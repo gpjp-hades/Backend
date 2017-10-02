@@ -4,7 +4,7 @@ namespace controller\auth;
 
 class manage {
     
-    use \controller\sendResponse;
+    use \traits\sendResponse;
 
     protected $container;
 
@@ -30,14 +30,7 @@ class manage {
             $data = $request->getParsedBody();
             $id = filter_var(@$data['id'], FILTER_SANITIZE_STRING);
 
-            if ($request->getAttribute('csrf_status') === false) {
-
-                $this->container->logger->addInfo("CSRF failed for userManage");
-                $this->sendResponse($request, $response, "auth/manage.phtml", [
-                    "error" => [["Communication error!", "Please try again"]]
-                ], "auth/manage.phtml");
-
-            } else if (is_string($id) && strlen($id) > 0) {
+            if (is_string($id) && strlen($id) > 0) {
                 
                 if ($users[$id] == 'admin') {
                     $this->redirectWithMessage($response, 'manageUsers', "error", ["Removal failed!", "Cannot remove the Admin account"]);
