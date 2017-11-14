@@ -3,8 +3,8 @@
 final class routes {
 
     function __construct(\Slim\App $app) {
-
-        $app->group('/hades', function() {
+        
+        $app->group($app->getContainer()->get('settings')['path'], function() {
             $this->group('', function() {
                 
                 $this->get('/', \controller\home::class)->setName('dashboard');

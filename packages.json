@@ -1,0 +1,11 @@
+{
+    "package": {
+        "name": "gpjp-hades/Backend",
+        "version": "1.0.0",
+        "source": {
+          "url": "https://github.com/gpjp-hades/Backend",
+          "type": "git",
+          "reference": "master"
+        }
+    }
+}

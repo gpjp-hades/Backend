@@ -10,6 +10,7 @@ $config['addContentLengthHeader'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";
 $config['name'] = "hades";
+$config['path'] = "/hades";
 
 session_start();
 
@@ -20,7 +21,7 @@ $container = $app->getContainer();
 $app->add(function (Request $request, Response $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
-    if ($path != '/' && substr($path, -1) == '/' && $path != '/hades/') {
+    if ($path != '/' && substr($path, -1) == '/' && $path != $this->get('settings')['path'] . '/') {
         $uri = $uri->withPath(substr($path, 0, -1));
         
         if($request->getMethod() == 'GET') {
