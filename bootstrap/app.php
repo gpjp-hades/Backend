@@ -43,10 +43,16 @@ $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
+$container['config'] = function($c) {
+    $config = new \config($c);
+    return $config;
+};
+
 $container['view'] = function ($container) {
     $templateVariables = [
         "router" => $container->router,
-        "auth" => $container->auth
+        "auth" => $container->auth,
+        "config" => $container->config
     ];
     return new \Slim\Views\PhpRenderer('../templates/', $templateVariables);
 };

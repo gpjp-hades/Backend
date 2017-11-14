@@ -13,6 +13,11 @@ final class api {
 
     function __invoke($request, $response) {
         
+        if ($this->container->config->getBool("new_reg") == false) {
+            $this->container->logger->addInfo("Api call - request:disabled");
+            return $response->withJson(["result" => "request denied"]);
+        }
+
         $this->token = $request->getAttribute("token");
         $this->name  = $request->getAttribute("name");
         

@@ -8,6 +8,7 @@ final class routes {
             $this->group('', function() {
                 
                 $this->get('/', \controller\home::class)->setName('dashboard');
+                $this->put('/config/{key}', \controller\config::class)->setName('config');
                 
                 $this->map(['GET', 'PUT', 'DELETE'], '/approve/{id}', \controller\info\approve::class)->add(\middleware\info\approve::class)->setName('approve');
                 $this->map(['GET', 'PUT', 'DELETE'], '/system/{id}', \controller\info\system::class)->add(\middleware\info\system::class)->setName('system');
@@ -22,7 +23,7 @@ final class routes {
     
                     $this->map(['GET', 'DELETE'], '/manage', \controller\auth\manage::class)->setName('manageUsers');
     
-                })->add(\middleware\auth::class);
+                });
             })->add(\middleware\auth::class);
             
             $this->map(['GET', 'POST'], '/login', \controller\auth\login::class)->setName('login');
