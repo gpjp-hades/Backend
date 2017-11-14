@@ -2,7 +2,9 @@
 PHP Backend for the **Hades** configuration and distribution utility
 # Requirements:
 **PHP** 7.1+
+
 **SQLite** PHP extention
+
 **Composer**
 # Instalation:
 ```bash
