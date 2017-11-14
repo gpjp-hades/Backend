@@ -28,3 +28,30 @@ vi foo/bar/bootstrap/app.php
 # find $config['path'] = "/hades";
 # change it to $config['path'] = "/foo";
 ```
+
+# About
+> You seriously think, I'm going to describe the whole app here?
+> Ok, fine...
+
+We use the [Slim Framework](https://www.slimframework.com/) for routing and I've build basic framework structure around it.
+
+### Here are some important folders
+* **app**
+  * **controller** *- contains all page controllers*
+  * **middleware** *- surprise, surprise, middleware here*
+  * **traits** *-just one trait for, mainly for messages Flashing*
+  * auth.php *- handles user lifecycle*
+  * config.php *- manages global permanent config*
+  * default.conf *- should be probably moved to config.php*
+  * routes.php *- **router**, quite important...*
+* **bootstrap**
+  * app.php *- even more important, sets Slim and its modules up*
+* **db** *- database.db is created here*
+  * seed.php *- seeds database*
+* **logs** *- try and guess*
+* **public** *- all what user can access*
+  * index.php *- starts bootstrap and binds router*
+* **templates** *- all HTML is here*
+  * **layout** *- only to be included*
+
+The rest you can probably figure out by yourself **:P**
