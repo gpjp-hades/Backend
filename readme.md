@@ -8,8 +8,9 @@ PHP Backend for the **Hades** configuration and distribution utility
 ```bash
 cd [your public www folder]
 
-composer create-project --repository-url https://github.com/gpjp-hades/Backend gpjp-hades/backend [your target folder]
+curl -O https://raw.githubusercontent.com/gpjp-hades/Backend/master/packages.json
+composer create-project --repository packages.json gpjp-hades/backend [your target folder]
 
 vi [your target folder]/bootstrap/app.php
-# find $config['path'] and set it to [your target folder
+# find $config['path'] and set it to [your target folder]
 ```
