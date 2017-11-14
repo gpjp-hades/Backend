@@ -12,7 +12,7 @@ composer create-project --repository packages.json gpjp-hades/backend hades
 
 **PHP** 7.1+
 
-**php_sqlite3**
+**php_sqlite3** (most likely already present)
 
 **Composer** 1.5.0+
 
@@ -33,7 +33,7 @@ vi foo/bar/bootstrap/app.php
 > You seriously think, I'm going to describe the whole app here?
 > Ok, fine...
 
-We use the [Slim Framework](https://www.slimframework.com/) for routing and I've build basic framework structure around it.
+We use the [Slim Framework](https://www.slimframework.com/) for routing and a basic structure around it.
 
 ### Here are some important folders
 * **app**
