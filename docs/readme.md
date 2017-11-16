@@ -3,7 +3,7 @@
 ```bash
 cd /var/www/html/
 
-curl -O https://raw.githubusercontent.com/gpjp-hades/Backend/master/packages.json
+curl -O https://github.com/gpjp-hades/Backend/releases/download/0.3/packages.json
 
 composer create-project --repository packages.json gpjp-hades/backend hades
 ```
