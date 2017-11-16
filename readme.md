@@ -10,7 +10,7 @@ PHP Backend for the **Hades** configuration and distribution utility
 ```bash
 cd [your public www folder]
 
-curl -O https://raw.githubusercontent.com/gpjp-hades/Backend/master/packages.json
+curl -O https://github.com/gpjp-hades/Backend/releases/download/0.3/packages.json
 composer create-project --repository packages.json gpjp-hades/backend [your target folder]
 
 vi [your target folder]/bootstrap/app.php
