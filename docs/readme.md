@@ -14,6 +14,8 @@ composer create-project --repository packages.json gpjp-hades/backend hades
 
 **php_sqlite3** (most likely already present)
 
+**libcurl** for PHP 7.10.5+
+
 **Composer** 1.5.0+
 
 ### Change default path
