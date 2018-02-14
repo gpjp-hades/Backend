@@ -10,7 +10,7 @@ $config['addContentLengthHeader'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";
 $config['name'] = "hades";
-$config['path'] = "/hades";
+$config['path'] = "";
 
 session_start();
 
