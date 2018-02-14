@@ -43,7 +43,6 @@ final class routes {
                 ->setName('login');
             $this->get('/api/{tok}[/{name}]', \controller\api::class)
                 ->add(\middleware\token::class);
-            
         });
 
     }
