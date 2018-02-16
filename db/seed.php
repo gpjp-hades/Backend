@@ -37,6 +37,14 @@ class seed {
             conf_value TEXT
         );");
 
+        if (!$this->db->has("config", ["conf_key" => "new_reg"])) {
+            $this->container->logger->addInfo("Seed: config");
+            $this->db->insert("config", [
+                "conf_key" => "new_reg",
+                "conf_value" => "false"
+            ]);
+        }
+
         if (!$this->db->has("users", ["name" => "admin"])) {
             $this->container->logger->addInfo("Seed: admin");
             $this->db->insert("users", [

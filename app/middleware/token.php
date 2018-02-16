@@ -4,7 +4,7 @@ namespace middleware;
 
 class token {
     
-    const sleep = 0;
+    const sleep = 5;
 
     public function __invoke($request, $response, $next) {
         
@@ -12,7 +12,7 @@ class token {
         $token = strtoupper($args['tok']);
 
         sleep(self::sleep);
-        if (!preg_match('/([^0-9A-F])/', $token) && strlen($token) == 5) {
+        if (!preg_match('/([^0-9A-F])/', $token) && strlen($token) == 64) {
 
             $request = $request->withAttributes([
                 "token" => $token,

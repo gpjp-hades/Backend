@@ -5,11 +5,12 @@ require '../vendor/autoload.php';
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-$config['displayErrorDetails'] = true;
+$config['displayErrorDetails'] = false;
 $config['addContentLengthHeader'] = true;
 $config['db']['type']   = "sqlite";
 $config['db']['file'] = "../db/database.db";
 $config['name'] = "hades";
+$config['path'] = "";
 
 session_start();
 
@@ -20,7 +21,7 @@ $container = $app->getContainer();
 $app->add(function (Request $request, Response $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
-    if ($path != '/' && substr($path, -1) == '/' && $path != '/hades/') {
+    if ($path != '/' && substr($path, -1) == '/' && $path != $this->get('settings')['path'] . '/') {
         $uri = $uri->withPath(substr($path, 0, -1));
         
         if($request->getMethod() == 'GET') {
@@ -43,10 +44,16 @@ $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
+$container['config'] = function($c) {
+    $config = new \config($c);
+    return $config;
+};
+
 $container['view'] = function ($container) {
     $templateVariables = [
         "router" => $container->router,
-        "auth" => $container->auth
+        "auth" => $container->auth,
+        "config" => $container->config
     ];
     return new \Slim\Views\PhpRenderer('../templates/', $templateVariables);
 };
